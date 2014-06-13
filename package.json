@@ -1,0 +1,12 @@
+{
+  "name": "hello-world",
+  "description": "hello world test app",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "express": "3.4.4",
+    "twit": "1.1.15",
+    "natural": "0.1.27",
+    "findit": "1.2.0"
+  }
+}

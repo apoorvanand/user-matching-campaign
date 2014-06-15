@@ -1,7 +1,7 @@
 var express = require('express');
 var natural = require('natural');
-var Twit = require('twit');
-var config = require('./config');
+var Twit    = require('twit');
+var config  = require('./config');
 
 var app = express();
 var classifier = new natural.BayesClassifier();

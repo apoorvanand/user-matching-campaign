@@ -9,10 +9,14 @@ How it works
 2. Tweets are processed.  The code run on this dataset is the piece that changes from project to project.
 3. @mentions are sent to participants.
 
+Install the Grunt CLI
+
+	npm install -g grunt-cli
+
 Install dependencies
 
     npm install
   
 Run the app
 
-    node app.js
+    grunt

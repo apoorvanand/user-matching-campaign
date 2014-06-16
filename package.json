@@ -8,6 +8,7 @@
 		"twit": "1.1.15",
 		"natural": "0.1.27",
 		"findit": "1.2.0",
+		"async": "0.9.0",
 		"grunt": "0.4.5"
 	},
 	"devDependencies": {

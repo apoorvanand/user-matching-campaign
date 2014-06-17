@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link rel="stylesheet" href="/stylesheets/vendor/bootstrap.min.css">
+	<link rel="stylesheet" href="/stylesheets/vendor/bootstrap-theme.min.css">
+	<link rel="stylesheet" href="/stylesheets/vendor/bootstrap-datetimepicker.min.css">
+	<link rel="stylesheet" href="/stylesheets/main.css">
+
+	<script src="/javascripts/vendor/jquery-2.1.1.min.js"></script>
+	<script src="/javascripts/vendor/bootstrap.min.js"></script>
+	<script src="/javascripts/vendor/moment.min.js"></script>
+	<script src="/javascripts/vendor/bootstrap-datetimepicker.min.js"></script>
+
+	<script src="/javascripts/Main.js"></script>
+	<script src="/javascripts/CategoriesView.js"></script>
+	<script src="/javascripts/SearchView.js"></script>
+	<script src="/javascripts/TweetView.js"></script>
+</head>
+<body>
+    
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">Mashable #1connection Dashboard</a>
+        </div>
+      </div>
+    </div>
+
+	<div class="container">
+	    <div class="row">
+	        <div class='col-sm-6'>
+
+	        	<div id="searchView" class="searchView panel panel-default">
+	        		<div class="panel-heading">Search</div>
+					<div class="panel-body">
+
+						<div class="form-group">
+
+						    <div class='input-group' id='hashTag'>
+						    	<span class="input-group-addon">#</span>
+						        <input type='text' class="hashtag form-control" value="hashtag" />
+						    </div>
+
+						    Start Date
+						    <div class='input-group date datetimepicker' id='startDate'>
+						        <input type='text' class="startDate form-control" data-format="yyyy-dd-MM hh:mm:ss" />
+						        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+						    </div>
+
+						    End Date
+						    <div class='input-group date datetimepicker' id='endDate'>
+						        <input type='text' class="endDate form-control" data-format="yyyy-dd-MM hh:mm:ss" />
+						        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+						    </div>
+							
+            				<button type="submit" class="btn btn-success">Start</button>
+
+						</div>
+					</div>
+				</div>
+
+	        </div>
+
+	        <div class='col-sm-6'>
+
+	        	<div id="tweetView" class="panel panel-default">
+	        		<div class="panel-heading">Compose Tweet</div>
+					<div class="panel-body">
+						<textarea id="pairTweetTxt" class="form-control" rows="5">Hey {{user1}} and {{user2}}, you should follow each other.</textarea>
+            			<button class="btn btn-success">Save</button>
+					</div>
+				</div>
+
+	        </div>
+
+
+	    </div>
+
+	    <div class="row">
+	        <div class='col-sm-12'>
+	        	<div id="categoriesView" class="panel panel-default">
+	        		<div class="panel-heading">Categories</div>
+					<div class="panel-body">
+						<div class="label-container">
+						</div>
+            			<button id="reloadBtn" type="submit" class="btn btn-success">Reload</button>
+					</div>
+				</div>
+	        </div>
+	     </div>
+
+	</div>
+
+</body>
+</html>

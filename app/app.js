@@ -5,6 +5,15 @@ var nlp     = require('./lib/nlp');
 
 var app = express();
 
+app.use(express.basicAuth('testUser', 'testPass'));
+app.use(express.static(__dirname + '/public'));
+
+app.engine('ejs', require('ejs').renderFile);
+app.set('views', __dirname + '/views');
+app.set('view engine', 'ejs');
+
+
+
 // Load controllers
 fs.readdirSync('./app/controllers/').forEach(function(name) {
 	require('./controllers/' + name.replace('.js', ''))(app);

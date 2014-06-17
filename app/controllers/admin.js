@@ -1,35 +1,40 @@
 module.exports = function(app) {
+	
+	var fs = require('fs');
+	var gnip = require(__dirname + '/../lib/gnip');
 
-	checkAuth = function(req, res, next) {
-		if(typeof(req.session.user) === 'undefined') {
-			req.session.user = { name: '', pass: '', loggedIn: false }
-		}
+	app.get('/admin', function(req, res) {
+		res.render('admin', { title: 'The index page!' })
+	});
 
-		if (!req.session.user.loggedIn) {
-			// req.session.user.loggedIn = true should be set in the 'login' route, in $R.user.validateLogin
-			res.redirect('/login');
-		} else {
-			// if we already have a req.session.user and they are logged in, keep going
-			next();
-		}
-	},
+	app.get('/search', function(req, res) {
 
-	app.get('/admin', checkAuth, function(req, res) {
-		res.send('You are logged in!');
-	}),
+		// run Gnip search
 
-	app.post('/login', function (req, res) {
-		var post = req.body;
-		if (post.user === 'john' && post.password === 'johnspassword') {
-			req.session.user_id = johns_user_id_here;
-			res.redirect('/admin');
-		} else {
-			res.send('Bad user/pass');
-		}
-	}),
+		res.send({
+			"result": "hello world"
+		});
+	});
 
-	app.get('/logout', function (req, res) {
-		delete req.session.user_id;
-		res.redirect('/login');
-	})
+	app.get('/savetweet', function(req, res) {
+
+		// save tweet to data store
+
+		res.send({
+			"result": "hello world"
+		});
+	});
+
+	app.get('/classifier.json', function(req, res) {
+
+		fs.readFile(__dirname + '/../../classifier.json', 'utf8', function (err, data) {
+		  if (err) {
+		    console.log('Error: ' + err);
+		    return;
+		  }
+		 
+		  res.send(JSON.parse(data));
+		});
+	});
+
 }

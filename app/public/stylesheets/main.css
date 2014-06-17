@@ -1,0 +1,24 @@
+body {
+	font-family: sans-serif;
+	background-color: #999;
+	padding: 75px;
+}
+
+.panel-heading {
+	font-weight: bold;
+}
+
+.input-group, #pairTweetTxt {
+	margin-bottom: 20px;
+}
+
+.label-container {
+	margin-bottom: 20px;
+}
+
+.label-container .label {
+	font-size: 14px;
+	font-weight: normal;
+	display: inline-block;
+	margin: 0 10px 10px 0;
+}

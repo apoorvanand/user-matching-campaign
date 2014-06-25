@@ -20,3 +20,16 @@ Install dependencies
 Run the app
 
     grunt
+
+Todo
+----
+1. Send function for matches
+2. How to handle ophans of categories
+3. How to handle a final orphan
+4. Make classify() a blocking function to avoid rate limiting
+5. Pair down profanity list
+6. Profanity check of username and tweet
+7. Check that users exist before sending out tweets
+8. More appropriate responses for routes
+8. Change classify, match, and sending to POSTS after testing
+9. Better way to import the corpus (i.e. don't use a timeout?)

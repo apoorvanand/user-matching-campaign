@@ -1,109 +1,56 @@
-var config  = require('../config/config');
-var http    = require('http');
+var config     = require('../config/config'); // Holds configuration data
+var request    = require('request');          // Used for HTTP requests
+var db_manager = require('./db_manager');
 
 module.exports = {
 
-	acceptRejectHistoricalJob: function(choice) {
+	/*
+	 * search        - A recursive search to the Gnip API
+	 *   query       - The search string (#twitter)
+	 *   from_date   - Starting date in the format YYYYMMDDHHMM (201401010001)
+	 *   to_date     - Ending date in the format YYYYMMDDHHMM (201406170001)
+	 *   max_results - The number of tweets per call (Max of 500)
+	 *   next_id     - Used for subsequent calls, i.e. paging
+	 * 
+	*/
+	search: function(query, from_date, to_date, max_results, next_id) {
+		var this_ = this;
 
-		var payload = '{"status":"'+choice+'"}';
+		var max_results = max_results || 500;
+		var next_id     = next_id || 0;
 
-		// May not need if "auth" works below and header doesn't need to be set
-		//var auth = 'Basic ' + new Buffer(config.gnip.user + ':' + config.gnip.pass).toString('base64');
+		var url = 'https://search.gnip.com/accounts/' + config.gnip.account + '/search/prod.json';
 
-		var options = {
-			'host'          : 'historical.gnip.com',
-			'path'          : '',
-			'auth'          : config.gnip.user+':'+config.gnip.pass,
-			'method'        : 'PUT',
-			'headers'       : {
-				'content-type': 'application/json'
-			}
+		var query_string = {
+			'publisher' : 'twitter',
+			'query'     : query,
+			'maxResults': max_results,
+			'fromDate'  : from_date,
+			'toDate'    : to_date
 		};
 
-		callback = function(res) {
-			console.log('STATUS: ' + res.statusCode);
-		 	console.log('HEADERS: ' + JSON.stringify(res.headers));
+		if (next_id != 0) {
+			query_string.next = next_id;
+		}  
 
-			var str = '';
+		// Make the search HTTP request
+		console.log('Making gnip search...');
+		request.get(url, { 'qs': query_string }, function (error, response, body) {
+			console.log('gnip search done.');
 
-			//another chunk of data has been recieved, so append it to `str`
-			res.on('data', function (chunk) {
-				str += chunk;
-			});
-
-			//the whole response has been recieved, so we just print it out here
-			res.on('end', function () {
-				console.log("response: "+str);
-			});
-		}
-
-		http.request(options, callback).end();
-	},
-
-	createHistoricalJob: function(title) {
-
-		var url = 'https://historical.gnip.com/accounts/' + cofig.gnip.account + '/jobs.json';
-
-		var stream_type = "track";
-		var data_format = "activity-streams";
-		var from_date = "201301010000"; // This time is inclusive
-		var to_date = "201301010001"; // This time is exclusive
-		var rules = '[{"value":"rule 1","tag":"ruleTag"},{"value":"rule 2","tag":"ruleTag"}]'
-		var post_data = '{"publisher":"twitter","streamType":"' + stream_type + '","dataFormat":"' + data_format + '","fromDate":"' + from_date + '","toDate":"' + to_date + '","title":"' + title + '","serviceUsername":"' + config.gnip.service_username + '","rules":' + rules + '}'
-
-		var options = {
-			'host'          : 'https://historical.gnip.com',
-			'path'          : '/accounts/'+config.gnip.account+'/jobs.json',
-			'auth'          : config.gnip.user+':'+config.gnip.pass,
-			'method'        : 'POST',
-			'headers'       : {
-				'Content-Type': 'application/x-www-form-urlencoded',
-		  		'Content-Length': post_data.length
+			// Log any error
+			if (error) {
+				db_manager.log(error);
 			}
-		};
 
-		// Set up the request
-		var post_req = http.request(options, function(res) {
-			res.setEncoding('utf8');
-			res.on('data', function (chunk) {
-			  console.log('Response: ' + chunk);
-			});
-		});
+			// Parse the result and pass the tweets to the DB manager to save
+			var result = JSON.parse(body);
+			db_manager.insertTweets(result.results);
 
-		// post the data
-		post_req.write(post_data);
-		post_req.end();
-	},
-
-	// https://historical.gnip.com/accounts/<account_name>/jobs.json
-	monitorJobStatus: function() {
-
-		var options = {
-			'host'          : 'historical.gnip.com',
-			'path'          : '/accounts/'+config.gnip.account+'/jobs.json',
-			'auth'          : config.gnip.user+':'+config.gnip.pass,
-			'headers'       : {
-				'content-type': 'application/json'
+			// Search again if we have a next id
+			if (result.next) {
+				this_.search(query, from_date, to_date, max_results, result.next);
 			}
-		};
-
-		callback = function(res) {
-			console.log('STATUS: ' + res.statusCode);
-		 	console.log('HEADERS: ' + JSON.stringify(res.headers));
-
-			var str = '';
-
-			//another chunk of data has been recieved, so append it to `str`
-			res.on('data', function (chunk) {
-				str += chunk;
-			});
-
-			//the whole response has been recieved, so we just print it out here
-			res.on('end', function () {
-				console.log("response: "+str);
-			});
-		}
-
-		http.request(options, callback).end();
+		}).auth(config.gnip.user, config.gnip.pass, true);
 	}
 }

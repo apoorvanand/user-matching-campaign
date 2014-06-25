@@ -1,5 +1,6 @@
-var Twit = require('twit');
-var config  = require('../config/config');
+var Twit       = require('twit');
+var config     = require('../config/config');
+var db_manager = require('./db_manager');
 
 var T = new Twit({
 	consumer_key:         config.twitter.consumer_key,
@@ -10,24 +11,72 @@ var T = new Twit({
 
 module.exports = {
 
-	classifyUser: function(user_id, classifier, debug, count) {
-		debug = debug || false;
-		count = count || 10;
+	classifyUser: function(user_id, classifier, count) {
+		count = count || 100;
 
 		// Get the users tweets
-		if (debug) { console.log('Getting tweets for '+user_id) };
+		if (config.verbose) { console.log('Getting tweets for '+user_id) };
 		T.get('statuses/user_timeline', { user_id: user_id, count: count, trim_user: true, exclude_replies: true }, function(err, data, response) {
+
+			if (err) {
+				console.log(err);
+				db_manager.log(err);
+			}
+
+			// Array of classifications and their weights
+			var category_weights = {};
 
 			for (i = 0; i < data.length; ++i) {
 
 				// Classify the tweet
 				classification = classifier.classify(data[i].text);
 
+				// Create an array of interests
+				if (!category_weights[classification]) {
+					category_weights[classification] = 1;
+				} else {
+					category_weights[classification] += 1;
+				}
+
 				// Print out classification and tweet
-				if (debug) {
+				if (config.verbose) {
 	  				console.log('['+classification+'] '+data[i].text);
 	  			}
 	  		}
+
+	  		// Find the highest engaging category
+	  		if (category_weights != {}) {
+
+	  			var top_category = '';
+	  			var count = 0;
+	  			for(var index in category_weights) {
+	  				if (category_weights[index] > count) {
+	  					top_category = index;
+	  					count = category_weights[index];
+	  				}
+	  			}
+
+	  			console.log('top category: '+top_category+'('+count+')');
+	  		}
+
+	  		// Add the category values to the database
+	  		db_manager.updateUserCategories(user_id, top_category, JSON.stringify(category_weights));
+
+	  		// return the top category so it can be added to a category index
+	  		return top_category;
 		});
+	},
+
+	deletedAccounts: function(users) {
+		//provide a list of deleted accounts
+	},
+
+	// TODO
+	sendMatch: function(user_id1, user_id2, template) {
+
+		var tweet = template.replace('{{user1}}', screenname1).replace('{{user2}}', screenname2);
+		T.post('statuses/update', { status: 'hello world!' }, function(err, data, response) {
+		  console.log(data);
+		})
 	}
 };

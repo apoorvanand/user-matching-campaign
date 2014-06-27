@@ -20,7 +20,7 @@ module.exports = {
 			// Create 'valid_users' if table doesn't exist
 			db.get("SELECT count(*) as count FROM sqlite_master WHERE type='table' AND name='valid_users'", function(err, row) {
 				if (row.count == 0) {
-					db.run("CREATE TABLE valid_users (id INTEGER PRIMARY KEY NOT NULL, user_id VARCHAR(30) NOT NULL, top_category VARCHAR(100), categories TEXT)");
+					db.run("CREATE TABLE valid_users (id INTEGER PRIMARY KEY NOT NULL, user_id VARCHAR(30) UNIQUE NOT NULL, top_category VARCHAR(100), categories TEXT)");
 				}
 			});
 
@@ -34,7 +34,7 @@ module.exports = {
 			// Create 'matches' if table doesn't exist
 			db.get("SELECT count(*) as count FROM sqlite_master WHERE type='table' AND name='matches'", function(err, row) {
 				if (row.count == 0) {
-					db.run("CREATE TABLE matches (id INTEGER PRIMARY KEY NOT NULL, user_id1 VARCHAR(30) NOT NULL, user_id2 VARCHAR(30) NOT NULL, sent_match TINYINT NOT NULL DEFAULT 0)");
+					db.run("CREATE TABLE matches (id INTEGER PRIMARY KEY NOT NULL, user_id1 VARCHAR(30) NOT NULL, user_id2 VARCHAR(30) NOT NULL, category VARCHAR(255) NOT NULL, sent_match TINYINT NOT NULL DEFAULT 0)");
 				}
 			});
 
@@ -93,6 +93,12 @@ module.exports = {
 		db.close();
 	},
 
+	getAllUncategorizedValidUsers: function(callback) {
+		var db = new sqlite.Database('mashable.db');
+		db.all("SELECT * FROM valid_users WHERE top_category = '' OR top_category IS NULL", callback);
+		db.close();
+	},
+
 	getAllCategories: function(callback) {
 		var db = new sqlite.Database('mashable.db');
 		db.all("SELECT * FROM categories", callback);
@@ -109,7 +115,7 @@ module.exports = {
 
 		var db = new sqlite.Database('mashable.db');
 		var tweet_smnt = db.prepare("INSERT INTO tweets (tweet_id, tweet_body, user_id, display_name, screenname, valid_user, valid_tweet) VALUES (?,?,?,?,?,?,?)");
-		var user_smnt  = db.prepare("INSERT INTO valid_users (user_id) VALUES (?)");
+		var user_smnt  = db.prepare("INSERT OR IGNORE INTO valid_users (user_id) VALUES (?)");
 
 		for (var i = 0; i < results.length; i++) {
 			console.log(results[i].actor.id.replace('id:twitter.com:','') + '|' + results[i].actor.displayName + '|' + results[i].actor.preferredUsername);
@@ -139,12 +145,25 @@ module.exports = {
 		});
 	},
 
+	insertCategoryLists: function(top_categories) {
+		var db    = new sqlite.Database('mashable.db');
+		var smnt  = db.prepare("INSERT INTO categories (category, top_users) VALUES (?,?)");
+
+		for (index in top_categories) {
+			smnt.run(index, top_categories[index]);
+		}
+
+		smnt.finalize(function() {
+			db.close();	
+		});
+	},
+
 	insertMatches: function(matches) {
 		var db    = new sqlite.Database('mashable.db');
-		var smnt  = db.prepare("INSERT INTO matches (user_id1, user_id2) VALUES (?,?)");
+		var smnt  = db.prepare("INSERT INTO matches (user_id1, user_id2, category) VALUES (?,?,?)");
 
 		for (var i = 0; i < matches.length; i++) {
-			smnt.run(matches[i][0],matches[i][1]);
+			smnt.run(matches[i][0],matches[i][1],matches[i][2]);
 		}
 
 		smnt.finalize(function() {
@@ -157,7 +176,7 @@ module.exports = {
 		db.run("UPDATE valid_users SET top_category = ?, categories = ? WHERE user_id = ?", [top_category, weights, user_id], function(err) {
 			if (err) {
 				console.log(err);
-				this.log(err);
+				module.exports.log(err);
 
 			}
 			db.close();

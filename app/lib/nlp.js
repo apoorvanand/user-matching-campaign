@@ -1,6 +1,9 @@
-var async   = require('async');
-var fs      = require('fs');
-var natural = require('natural');
+var async          = require('async');
+var fs             = require('fs');
+var natural        = require('natural');
+var TwitterWrapper = require('./twitter');
+var config         = require('../config/config')
+var db_manager     = require('./db_manager');
 
 module.exports = {
 
@@ -18,6 +21,80 @@ module.exports = {
 				this.importCorpus(classifier);
 			}
 		}
+	},
+
+	classifyUsers: function(app, rows, cursor) {
+		var this_ = this;
+
+		cursor = cursor || 0;
+		if (cursor == 0) {
+			category_matches = new Array();
+		}
+		
+		if (cursor < rows.length) {
+			TwitterWrapper.getTimeline(rows[cursor].user_id, classifyUser);
+		} else {
+			console.log('Done classifying users.');
+			console.log(category_matches);
+			module.exports.saveCategoryUsers(category_matches);
+		}
+
+		function classifyUser(user_id, tweets) {
+			var category_weights = {};
+
+			for (i = 0; i < tweets.length; ++i) {
+
+				// Classify the tweet
+				classification = app.get('classifier').classify(tweets[i].text);
+
+				// Add the classification to the frequency array
+				if (!category_weights[classification]) {
+					category_weights[classification] = 1;
+				} else {
+					category_weights[classification] += 1;
+				}
+
+				// Print out classification and tweet
+				if (config.verbose) {
+	  				//console.log('['+classification+'] '+tweets[i].text);
+	  			}
+	  		}
+
+			// Find the highest engaging category
+			if (category_weights != {}) {
+
+				var top_category = '';
+				var count = 0;
+				for(var index in category_weights) {
+					if (category_weights[index] > count) {
+						top_category = index;
+						count = category_weights[index];
+					}
+				}
+
+				if (config.verbose) {
+					console.log('Top category for '+user_id+': '+top_category+'('+count+')');
+				}
+
+				// Add the category values to the database
+	   			db_manager.updateUserCategories(user_id, top_category, JSON.stringify(category_weights));
+
+	   			//console.log(category_weights);
+
+	   			// Add user to category indexes
+				if (!category_matches[top_category]) {
+					category_matches[top_category] = user_id;
+				} else {
+					category_matches[top_category] += ','+user_id;
+				}
+	   			
+	   			this_.classifyUsers(app, rows, ++cursor);
+			}
+		}
+	},
+
+	saveCategoryUsers: function(top_categories) {
+		db_manager.insertCategoryLists(top_categories);
 	},
 
 	importCorpus: function(classifier) {

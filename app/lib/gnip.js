@@ -1,6 +1,7 @@
 var config     = require('../config/config'); // Holds configuration data
 var request    = require('request');          // Used for HTTP requests
 var db_manager = require('./db_manager');
+var fs = require('fs');
 
 module.exports = {
 
@@ -45,6 +46,7 @@ module.exports = {
 
 			// Parse the result and pass the tweets to the DB manager to save
 			var result = JSON.parse(body);
+
 			db_manager.insertTweets(result.results);
 
 			// Search again if we have a next id

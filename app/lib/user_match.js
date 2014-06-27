@@ -1,4 +1,5 @@
 var db_manager = require('./db_manager');
+var config     = require('../config/config');
 
 module.exports = {
 
@@ -25,22 +26,37 @@ module.exports = {
 				for (var j = 0; j < user_list.length; j += 2) {
 					// If we still have at least two left, we can match
 					if (user_list[j+1]) {
-						console.log("match: "+user_list[j]+' '+user_list[j+1]);
-						matches.push([user_list[i],user_list[i+1]]);
+						if (config.verbose) {
+							console.log("match: "+user_list[j]+' '+user_list[j+1]);
+						}
+						matches.push([user_list[j], user_list[j+1], rows[i].category]);
 					// Otherwise, this user is an orphan
 					} else {
-						console.log("orphan: "+user_list[j]);
+						if (config.verbose) {
+							console.log("orphan: "+user_list[j]);
+						}
 						orphans.push(user_list[j]);
 					}
 				}
 			}
 
+			// Match the remaining orphans
+			for (var i = 0; i < orphans.length; i += 2) {
+				if (orphans[i+1]) {
+					if (config.verbose) {
+						console.log("orphan match: "+orphans[i]+' '+orphans[i+1]);
+					}
+					matches.push([orphans[i], orphans[i+1], '']);
+				} else {
+					if (config.verbose) {
+						console.log("FINAL ORPHAN: "+orphans[i]);
+					}
+					matches.push([orphans[i], 0, '']);
+				}
+			}
+
 			// Insert matches into the database
 			db_manager.insertMatches(matches);
-
-			// TODO: how to handle orphans?
-			console.log(orphans);
 		}
-
 	}
 }

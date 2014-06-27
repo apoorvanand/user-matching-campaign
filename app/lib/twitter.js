@@ -11,12 +11,43 @@ var T = new Twit({
 
 module.exports = {
 
+	getTimeline: function(user_id, callback, count) {
+		var this_ = this;
+		var count = count || 100;
+
+		if (config.verbose) { console.log('Getting timeline for '+user_id) };
+		T.get('statuses/user_timeline', { user_id: user_id, count: count, trim_user: true, exclude_replies: true }, function(err, data, response) {
+
+			// Check for error
+			if (err) {
+				db_manager.log(err);
+			}
+
+			// Check for rate limiting
+			if (response.headers.status == '429 Too Many Requests') {
+				if (config.verbose) { console.log('Rate limit retry in 1 min: getTimeline ('+user_id+')') };
+				setTimeout(this_.classifyUser(user_id, classifier, count), 60000);
+				return;
+			}
+
+			// Callback with data
+			callback(user_id, data);
+		});
+	},
+/*
 	classifyUser: function(user_id, classifier, count) {
 		count = count || 100;
 
 		// Get the users tweets
 		if (config.verbose) { console.log('Getting tweets for '+user_id) };
 		T.get('statuses/user_timeline', { user_id: user_id, count: count, trim_user: true, exclude_replies: true }, function(err, data, response) {
+
+			// Check for rate limiting
+			if (response.headers.status == '429 Too Many Requests') {
+				if (config.verbose) { console.log('Rate limit retry in 1 min: classifyUser ('+user_id+')') };
+				setTimeout(this_.classifyUser(user_id, classifier, count), 60000);
+				return;
+			}
 
 			if (err) {
 				console.log(err);
@@ -40,7 +71,7 @@ module.exports = {
 
 				// Print out classification and tweet
 				if (config.verbose) {
-	  				console.log('['+classification+'] '+data[i].text);
+	  				//console.log('['+classification+'] '+data[i].text);
 	  			}
 	  		}
 
@@ -66,6 +97,7 @@ module.exports = {
 	  		return top_category;
 		});
 	},
+*/
 
 	deletedAccounts: function(users) {
 		//provide a list of deleted accounts

@@ -30,3 +30,9 @@ Todo
 5. Check that all requires are necessary
 6. Add action to clear out database tables after matches are sent
 7. If possible, add a function that checks status of previous action to make sure the current action can run
+
+Gnip Dates
+----------
+Start - 201406120400
+To Friday - 201406270401
+Thru Sunday - 201406300401

@@ -20,14 +20,15 @@ module.exports = {
 
 			// Check for error
 			if (err) {
-				db_manager.log(err);
-			}
+				console.log(err.message.error);
+				db_manager.log(err.message);
 
-			// Check for rate limiting
-			if (response.headers.status == '429 Too Many Requests') {
-				if (config.verbose) { console.log(('Rate limit retry in 1 min: getTimeline ('+user_id+')').warn) };
-				setTimeout(this_.classifyUser(user_id, classifier, count), 60000);
-				return;
+				// Check for rate limit error
+				if (err.statusCode == 429) {
+					console.log(('Retry in 1 min: getTimeline ('+user_id+')').warn);
+					setTimeout(function() { this_.getTimeline(user_id, callback, count) }, 60000);
+					return;
+				}
 			}
 
 			// Callback with data
@@ -36,47 +37,96 @@ module.exports = {
 	},
 
 	// TODO: make this recursive or do it outside the function
-	usersLookup: function(lookup_array, callback, cursor) {
+	usersLookup: function(lookup_array, cursor, callback) {
 		var this_ = this;
 
-		if (config.verbose) { console.log('Looking up users.'.info) };
+		if (config.verbose) { console.log(('Looking up users ('+cursor+')...').info) };
 
-		cursor = cursor || 0;
-		if (cursor == 0) {
-			category_matches = new Array();
-		}
 
-		if (cursor < lookup_array.length) {
-
-		}
-
-		T.get('users/lookup', { user_id: lookup_array[0].join(','), include_entities: false }, function(err, data, response) {
+		// TODO Loop this over multiple calls
+		T.get('users/lookup', { user_id: lookup_array.join(','), include_entities: false }, function(err, data, response) {
 
 			// Check for error
 			if (err) {
 				db_manager.log(err);
+
+				// Check for rate limit error
+				if (err.statusCode == 429) {
+					console.log(('Retry in 1 min: users/lookup').warn);
+					setTimeout(function() { this_.usersLookup(lookup_array, cursor, callback) }, 60000);
+				}
 			}
 
 			var screennames_array = new Array();
 			for (var i = 0; i < data.length; i++) {
-				console.log(data[i].id_str+" "+data[i].screen_name);
 				screennames_array.push({ user_id: data[i].id_str, screenname: data[i].screen_name});
 			}
 
-			callback(screennames_array);
+			callback(++cursor, screennames_array);
 		});
 	},
 
-	deletedAccounts: function(users) {
-		//provide a list of deleted accounts
-	},
+	postTweet: function(tweet, callback) {
+		var this_ = this;
+		var rate_limit = config.rate_limits.statuses_update || 6000;
+		var timeout    = (900000/rate_limit)+1;
 
-	// TODO
-	sendMatch: function(user_id1, user_id2, template) {
+		T.post('statuses/update', { status: tweet }, function(err, data, response) {
 
-		var tweet = template.replace('{{user1}}', screenname1).replace('{{user2}}', screenname2);
-		T.post('statuses/update', { status: 'hello world!' }, function(err, data, response) {
-		  console.log(data);
+			// Check for error
+			if (err) {
+				console.log(err.message.error);
+				db_manager.log(err.message);
+
+				// Check for rate limit error
+				if (err.statusCode == 429) {
+					console.log(('Retry in 1 min: statuses/update ('+tweet+')').warn);
+					setTimeout(function() { this_.postTweet(tweet, callback) }, 60000);
+				}
+
+				// Check for duplicate attempt
+				if (err.statusCode == 187) {
+					console.log('Duplicate tweet. Not sending.'.warn);
+				}
+				return;
+			}
+
+			// Make callback after rate limit protection delay
+			setTimeout(function(){ callback(data) }, timeout);
 		});
 	}
+
+	// TODO
+	/*
+	sendMatch: function(user_id1, user_id2, category, template, callback) {
+		var this_ = this;
+
+		// Timeout to avoid rate limiting
+		// equation: (1000/timeout)*60*15 = rate_limit
+		var rate_limit = config.rate_limits.statuses_update || 6000;
+		var timeout    = (900000/rate_limit)+1;
+
+		var tweet = template.replace('{{user1}}', screenname1).replace('{{user2}}', screenname2).replace('{{category}}', category);
+		T.post('statuses/update', { status: 'hello world!' }, function(err, data, response) {
+
+			// Check for error
+			if (err) {
+				console.log(err.message.error);
+				db_manager.log(err.message);
+
+				// Check for rate limit error
+				if (err.statusCode == 429) {
+					console.log(('Retry in 1 min: statuses/update ('+user_id1+','+user_id2+')').warn);
+					//setTimeout(function() { this_.sendMatch(user_id1, user_id2, template) }, 60000);
+					return;
+				}
+				return;
+			}
+
+			console.log(data);
+
+			// Make callback
+			callback(data);
+		});
+	}*/
 };

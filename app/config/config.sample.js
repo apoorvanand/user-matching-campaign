@@ -20,6 +20,10 @@ module.exports = {
 		service_username: ''
 	},
 
+	rate_limits: {
+		statuses_update: 15
+	}
+
 	// Managed with SQLite once the app is created
 	defaults: {
 		search:         '',

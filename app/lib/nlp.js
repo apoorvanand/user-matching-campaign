@@ -48,26 +48,29 @@ module.exports = {
 		function classifyUser(user_id, tweets) {
 			var category_weights = {};
 
-			for (i = 0; i < tweets.length; ++i) {
+			if (typeof tweets != 'undefined') {
 
-				// Classify the tweet
-				classification = app.get('classifier').classify(tweets[i].text);
+				for (i = 0; i < tweets.length; ++i) {
 
-				// Add the classification to the frequency array
-				if (!category_weights[classification]) {
-					category_weights[classification] = 1;
-				} else {
-					category_weights[classification] += 1;
-				}
+					// Classify the tweet
+					classification = app.get('classifier').classify(tweets[i].text);
 
-				// Print out classification and tweet
-				if (config.verbose) {
-	  				//console.log('['+classification+'] '+tweets[i].text);
-	  			}
-	  		}
+					// Add the classification to the frequency array
+					if (!category_weights[classification]) {
+						category_weights[classification] = 1;
+					} else {
+						category_weights[classification] += 1;
+					}
+
+					// Print out classification and tweet
+					if (config.verbose) {
+		  				//console.log('['+classification+'] '+tweets[i].text);
+		  			}
+		  		}
+		  	}
 
 			// Find the highest engaging category as long as there were tweets
-			if (tweets.length > 0) {
+			if (typeof tweets != 'undefined') {
 
 				var top_category = '';
 				var count = 0;
@@ -93,7 +96,9 @@ module.exports = {
 				} else {
 					category_matches[top_category] += ','+user_id;
 				}
-			} else {
+			} 
+
+			if (typeof tweets != 'undefined' && tweets.length == 0) {
 				if (config.verbose) {
 					console.log((user_id+' had no tweets! May only have replies.').warn);
 				}

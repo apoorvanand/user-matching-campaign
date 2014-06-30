@@ -118,6 +118,12 @@ module.exports = {
 		db.close();
 	},
 
+	getMatchesToSend: function(callback) {
+		var db = new sqlite.Database('mashable.db');
+		db.all("SELECT * FROM matches WHERE user_id1 IS NOT NULL AND user_id2 IS NOT NULL AND user_id2 != 0 AND sent_match = 0", callback);
+		db.close();
+	},
+
 	insertTweets: function(results) {
 
 		var db = new sqlite.Database('mashable.db');
@@ -195,7 +201,6 @@ module.exports = {
 			if (err) {
 				console.log(err.error);
 				module.exports.log(err);
-
 			}
 			db.close();
 		});
@@ -221,6 +226,18 @@ module.exports = {
 				db.close();
 				callback();
 			});
+		});
+	},
+
+	markSent: function(match_id, callback) {
+		var db = new sqlite.Database('mashable.db');
+		db.run("UPDATE matches SET sent_match = 1 WHERE id = ?", [match_id], function(err) {
+			if (err) {
+				console.log(err.error);
+				module.exports.log(err);
+			}
+			db.close();
+			callback();
 		});
 	},
 

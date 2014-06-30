@@ -4,6 +4,7 @@ var TwitterWrapper = require('../lib/twitter');
 var nlp            = require('../lib/nlp');
 var db_manager     = require('../lib/db_manager');
 var user_match     = require('../lib/user_match');
+var tweetDelivery  = require('../lib/tweet_delivery');
 
 var profanity = require('../lib/validator');
 
@@ -11,6 +12,35 @@ module.exports = function(app) {
 
 	app.get('/', function(req, res){
 		res.render('index');
+
+/*
+		var db = new sqlite.Database('mashable.db');
+		db.all("SELECT * FROM valid_users WHERE top_category != '' AND top_category IS NOT NULL", printIt);
+		db.close();
+
+		function printIt(err, rows) {
+
+			var categories = {};
+
+			for (var i = rows.length - 1; i >= 0; i--) {
+				console.log(rows[i].user_id+' '+rows[i].top_category);
+
+
+					if (!categories[rows[i].top_category]) {
+						categories[rows[i].top_category] = rows[i].user_id;
+					} else {
+						categories[rows[i].top_category] = categories[rows[i].top_category] + ',' + rows[i].user_id;
+					}
+
+
+
+			};
+
+			console.log(categories);
+		}
+*/
+
+
 	});
 
 	app.get('/search', function(req, res){
@@ -54,13 +84,15 @@ module.exports = function(app) {
 		res.render('ajax', { request: 'match' });
 	});
 
-	//
+	// Send the tweets
 	app.get('/send', function(req, res) {
+		console.log('Get all valid users to send tweets...'.info);
 		
 		// Get all valid users for existance check
-		db_manager.getAllValidUsers(lookup);
+		db_manager.getAllValidUsers(checkUsers);
 
-		function lookup(err, rows) {
+		function checkUsers(err, rows) {
+			console.log('Lookup users to confirm existance...'.info);
 
 			// Separate the user IDs into arrays of 100 to make a minimal amount of users/lookup calls
 			var lookup_array = new Array();
@@ -71,26 +103,46 @@ module.exports = function(app) {
 				lookup_array[lookup_array.length-1].push(rows[i].user_id);
 			}
 
-			TwitterWrapper.usersLookup(lookup_array, setScreennames);
+			var screennames = new Array();
+			function lookup(cursor, data) {
+				cursor = cursor || 0;
 
-			//console.log(lookup_array);
-			
-			// Check if all users exist and get their latest screennames
+				if (data) {
+					screennames.push.apply(screennames, data);
+				}
 
-			// Add callback and mark any users as invalid if they no longer exist
-			// Continue with user dataset to start sending
+				if (cursor < 0 /*lookup_array.length */) {
+					TwitterWrapper.usersLookup(lookup_array[cursor], cursor, lookup);
+				} else {
+					setScreennames(screennames);
+				}
+			}
 
-			//TwitterWrapper.sendMatch(user1, user2, template);
+			lookup();
 		}
 
 		function setScreennames(screennames) {
-			db_manager.updateUserScreennames(screennames, queueSend);
+			console.log('Set latest screennames...'.info);
+			db_manager.updateUserScreennames(screennames, getSettings);
+		}
 
-			function queueSend() {
-				console.log('queue send'.info);
+		function getSettings() {
+			console.log('Get tweet template...'.info);
+
+			// Get tweet template
+			db_manager.getSettings(getMatches);
+		}
+
+		function getMatches(err, settings) {
+			// GET matches not sent where usernames are both not null
+			console.log('Start sending tweets...'.info);
+			db_manager.getMatchesToSend(startSending);
+
+			function startSending(err, matches) {
+				tweetDelivery.sendTweets(matches, settings.tweet);
 			}
 		}
-		
+
 		res.render('ajax', { request: 'send' });
 	});
 };

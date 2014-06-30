@@ -46,11 +46,14 @@ module.exports = {
 					if (config.verbose) {
 						console.log("orphan match: "+orphans[i]+' '+orphans[i+1]);
 					}
+					// Add orphan match with a blank category, test existance of category for messaging
 					matches.push([orphans[i], orphans[i+1], '']);
 				} else {
 					if (config.verbose) {
 						console.log("FINAL ORPHAN: "+orphans[i]);
 					}
+					// Add ID of 0 for the final orphan and use this value to find the identity of a final orphan.
+					// Message orphan manually. DO NOT duplicate match with another participant.
 					matches.push([orphans[i], 0, '']);
 				}
 			}

@@ -2,7 +2,8 @@
 
 	app.SearchView = function (id) {
 	  this.el = $(id);
-	  this.startBtn = this.el.find('.btn-success');
+	  //this.startBtn = this.el.find('.btn-success');
+	  this.startBtn = this.el.find('.btn-search');
 	  this.startDateInput = this.el.find('.startDate');
 	  this.endDateInput = this.el.find('.endDate');
 	  this.hashTagInput = this.el.find('.hashtag');

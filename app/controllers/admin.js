@@ -7,7 +7,7 @@ module.exports = function(app) {
 		res.render('admin', { title: 'The index page!' })
 	});
 
-	app.get('/search', function(req, res) {
+	app.get('/gnip', function(req, res) {
 
 		// run Gnip search
 
@@ -29,7 +29,7 @@ module.exports = function(app) {
 
 		fs.readFile(__dirname + '/../../classifier.json', 'utf8', function (err, data) {
 		  if (err) {
-		    console.log('Error: ' + err);
+		    console.log(('Error: ' + err).error);
 		    return;
 		  }
 		 

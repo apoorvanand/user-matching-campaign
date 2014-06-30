@@ -13,7 +13,7 @@ module.exports = {
 			// Create 'tweets' if table doesn't exist
 			db.get("SELECT count(*) as count FROM sqlite_master WHERE type='table' AND name='tweets'", function(err, row) {
 				if (row.count == 0) {
-					db.run("CREATE TABLE tweets (id INTEGER PRIMARY KEY NOT NULL, tweet_id VARCHAR(30) NOT NULL, tweet_body VARCHAR(200), user_id VARCHAR(30) NOT NULL, display_name VARCHAR(20), screenname VARCHAR(15) NOT NULL, valid_user TINYINT NOT NULL, valid_tweet TINYINT NOT NULL)");
+					db.run("CREATE TABLE tweets (id INTEGER PRIMARY KEY NOT NULL, tweet_id VARCHAR(30) UNIQUE NOT NULL, tweet_body VARCHAR(200), user_id VARCHAR(30) NOT NULL, display_name VARCHAR(20), screenname VARCHAR(15) NOT NULL, valid_user TINYINT NOT NULL, valid_tweet TINYINT NOT NULL)");
 				}
 			});
 
@@ -21,6 +21,13 @@ module.exports = {
 			db.get("SELECT count(*) as count FROM sqlite_master WHERE type='table' AND name='valid_users'", function(err, row) {
 				if (row.count == 0) {
 					db.run("CREATE TABLE valid_users (id INTEGER PRIMARY KEY NOT NULL, user_id VARCHAR(30) UNIQUE NOT NULL, top_category VARCHAR(100), categories TEXT)");
+				}
+			});
+
+			// Create 'rejected_users' if table doesn't exist
+			db.get("SELECT count(*) as count FROM sqlite_master WHERE type='table' AND name='rejected_users'", function(err, row) {
+				if (row.count == 0) {
+					db.run("CREATE TABLE rejected_users (id INTEGER PRIMARY KEY NOT NULL, user_id VARCHAR(30) UNIQUE NOT NULL, screenname VARCHAR(15))");
 				}
 			});
 
@@ -34,7 +41,7 @@ module.exports = {
 			// Create 'matches' if table doesn't exist
 			db.get("SELECT count(*) as count FROM sqlite_master WHERE type='table' AND name='matches'", function(err, row) {
 				if (row.count == 0) {
-					db.run("CREATE TABLE matches (id INTEGER PRIMARY KEY NOT NULL, user_id1 VARCHAR(30) NOT NULL, user_id2 VARCHAR(30) NOT NULL, category VARCHAR(255) NOT NULL, sent_match TINYINT NOT NULL DEFAULT 0)");
+					db.run("CREATE TABLE matches (id INTEGER PRIMARY KEY NOT NULL, user_id1 VARCHAR(30) NOT NULL, user_name1 VARCHAR(15), user_id2 VARCHAR(30) NOT NULL, user_name2 VARCHAR(15), category VARCHAR(255) NOT NULL, sent_match TINYINT NOT NULL DEFAULT 0)");
 				}
 			});
 
@@ -114,14 +121,15 @@ module.exports = {
 	insertTweets: function(results) {
 
 		var db = new sqlite.Database('mashable.db');
-		var tweet_smnt = db.prepare("INSERT INTO tweets (tweet_id, tweet_body, user_id, display_name, screenname, valid_user, valid_tweet) VALUES (?,?,?,?,?,?,?)");
-		var user_smnt  = db.prepare("INSERT OR IGNORE INTO valid_users (user_id) VALUES (?)");
+		var tweet_smnt  = db.prepare("INSERT OR IGNORE INTO tweets (tweet_id, tweet_body, user_id, display_name, screenname, valid_user, valid_tweet) VALUES (?,?,?,?,?,?,?)");
+		var user_smnt   = db.prepare("INSERT OR IGNORE INTO valid_users (user_id) VALUES (?)");
+		var reject_smnt = db.prepare("INSERT OR IGNORE INTO rejected_users (user_id, screenname) VALUES (?,?)");
 
 		for (var i = 0; i < results.length; i++) {
-			console.log(results[i].actor.id.replace('id:twitter.com:','') + '|' + results[i].actor.displayName + '|' + results[i].actor.preferredUsername);
+			console.log(results[i].actor.id.replace('id:twitter.com:','') + ' | ' + results[i].actor.displayName + ' | ' + results[i].actor.preferredUsername);
 			var valid_user  = validator.validScreenname(results[i].actor.preferredUsername);
 			var valid_tweet = validator.validTweet(results[i].body);
-			var user_id     = results[i].actor.id.replace('id:twitter.com:','')
+			var user_id     = results[i].actor.id.replace('id:twitter.com:','');
 
 			tweet_smnt.run(
 				results[i].id.substr(results[i].id.lastIndexOf(':')+1),
@@ -133,14 +141,24 @@ module.exports = {
 				valid_tweet
 			);
 
+			// remove
+			if (!valid_tweet) {
+				console.log(('REJECTED TWEET: '+results[i].body).warn);
+			}
+
 			if (valid_user) {
 				user_smnt.run(user_id);
+			} else {
+				console.log(('REJECTED: '+user_id).warn);
+				reject_smnt.run(user_id, results[i].actor.preferredUsername);
 			}
 		}
 
 		tweet_smnt.finalize(function() {
 			user_smnt.finalize(function() {
-				db.close();	
+				reject_smnt.finalize(function() {
+					db.close();
+				});
 			});
 		});
 	},
@@ -175,11 +193,34 @@ module.exports = {
 		var db = new sqlite.Database('mashable.db');
 		db.run("UPDATE valid_users SET top_category = ?, categories = ? WHERE user_id = ?", [top_category, weights, user_id], function(err) {
 			if (err) {
-				console.log(err);
+				console.log(err.error);
 				module.exports.log(err);
 
 			}
 			db.close();
+		});
+	},
+
+	updateUserScreennames: function(screennames, callback) {
+		var db    = new sqlite.Database('mashable.db');
+		var smnt1 = db.prepare("UPDATE matches SET user_name1 = ? WHERE user_id1 = ?");
+
+		for (var i = 0; i < screennames.length; i++) {
+			smnt1.run(screennames[i].screenname, screennames[i].user_id);
+		}
+
+		smnt1.finalize(function() {
+
+			var smnt2 = db.prepare("UPDATE matches SET user_name2 = ? WHERE user_id2 = ?");
+
+			for (var i = 0; i < screennames.length; i++) {
+				smnt2.run(screennames[i].screenname, screennames[i].user_id);
+			}
+
+			smnt2.finalize(function() {
+				db.close();
+				callback();
+			});
 		});
 	},
 

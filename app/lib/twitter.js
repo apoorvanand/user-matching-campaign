@@ -25,7 +25,7 @@ module.exports = {
 
 			// Check for rate limiting
 			if (response.headers.status == '429 Too Many Requests') {
-				if (config.verbose) { console.log('Rate limit retry in 1 min: getTimeline ('+user_id+')') };
+				if (config.verbose) { console.log(('Rate limit retry in 1 min: getTimeline ('+user_id+')').warn) };
 				setTimeout(this_.classifyUser(user_id, classifier, count), 60000);
 				return;
 			}
@@ -34,70 +34,38 @@ module.exports = {
 			callback(user_id, data);
 		});
 	},
-/*
-	classifyUser: function(user_id, classifier, count) {
-		count = count || 100;
 
-		// Get the users tweets
-		if (config.verbose) { console.log('Getting tweets for '+user_id) };
-		T.get('statuses/user_timeline', { user_id: user_id, count: count, trim_user: true, exclude_replies: true }, function(err, data, response) {
+	// TODO: make this recursive or do it outside the function
+	usersLookup: function(lookup_array, callback, cursor) {
+		var this_ = this;
 
-			// Check for rate limiting
-			if (response.headers.status == '429 Too Many Requests') {
-				if (config.verbose) { console.log('Rate limit retry in 1 min: classifyUser ('+user_id+')') };
-				setTimeout(this_.classifyUser(user_id, classifier, count), 60000);
-				return;
-			}
+		if (config.verbose) { console.log('Looking up users.'.info) };
 
+		cursor = cursor || 0;
+		if (cursor == 0) {
+			category_matches = new Array();
+		}
+
+		if (cursor < lookup_array.length) {
+
+		}
+
+		T.get('users/lookup', { user_id: lookup_array[0].join(','), include_entities: false }, function(err, data, response) {
+
+			// Check for error
 			if (err) {
-				console.log(err);
 				db_manager.log(err);
 			}
 
-			// Array of classifications and their weights
-			var category_weights = {};
+			var screennames_array = new Array();
+			for (var i = 0; i < data.length; i++) {
+				console.log(data[i].id_str+" "+data[i].screen_name);
+				screennames_array.push({ user_id: data[i].id_str, screenname: data[i].screen_name});
+			}
 
-			for (i = 0; i < data.length; ++i) {
-
-				// Classify the tweet
-				classification = classifier.classify(data[i].text);
-
-				// Create an array of interests
-				if (!category_weights[classification]) {
-					category_weights[classification] = 1;
-				} else {
-					category_weights[classification] += 1;
-				}
-
-				// Print out classification and tweet
-				if (config.verbose) {
-	  				//console.log('['+classification+'] '+data[i].text);
-	  			}
-	  		}
-
-	  		// Find the highest engaging category
-	  		if (category_weights != {}) {
-
-	  			var top_category = '';
-	  			var count = 0;
-	  			for(var index in category_weights) {
-	  				if (category_weights[index] > count) {
-	  					top_category = index;
-	  					count = category_weights[index];
-	  				}
-	  			}
-
-	  			console.log('top category: '+top_category+'('+count+')');
-	  		}
-
-	  		// Add the category values to the database
-	  		db_manager.updateUserCategories(user_id, top_category, JSON.stringify(category_weights));
-
-	  		// return the top category so it can be added to a category index
-	  		return top_category;
+			callback(screennames_array);
 		});
 	},
-*/
 
 	deletedAccounts: function(users) {
 		//provide a list of deleted accounts
@@ -109,6 +77,6 @@ module.exports = {
 		var tweet = template.replace('{{user1}}', screenname1).replace('{{user2}}', screenname2);
 		T.post('statuses/update', { status: 'hello world!' }, function(err, data, response) {
 		  console.log(data);
-		})
+		});
 	}
 };

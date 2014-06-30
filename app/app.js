@@ -4,6 +4,7 @@ var natural = require('natural');
 var nlp     = require('./lib/nlp');
 var config  = require('./config/config');
 var db_manager = require('./lib/db_manager');
+var colors  = require('colors');
 
 var app = express();
 
@@ -28,6 +29,9 @@ nlp.loadClassifier(app, classifier);
 
 // Setup database
 db_manager.setupDatabase();
+
+// Define color scheme
+colors.setTheme({ info: 'green', data: 'grey', help: 'cyan', warn: 'yellow', debug: 'blue', error: 'red' });
 
 // Start the server
 var server = app.listen(3000, function() {

@@ -34,8 +34,14 @@ module.exports = {
 		if (cursor < rows.length) {
 			TwitterWrapper.getTimeline(rows[cursor].user_id, classifyUser);
 		} else {
-			console.log('Done classifying users.');
-			console.log(category_matches);
+			console.log('Done classifying users.'.info);
+
+			if (config.verbose) {
+				for (index in category_matches) {
+					console.log(index+' ('+((category_matches[index].match(/,/g)||[]).length+1)+')');
+				}
+			}
+
 			module.exports.saveCategoryUsers(category_matches);
 		}
 
@@ -60,8 +66,8 @@ module.exports = {
 	  			}
 	  		}
 
-			// Find the highest engaging category
-			if (category_weights != {}) {
+			// Find the highest engaging category as long as there were tweets
+			if (tweets.length > 0) {
 
 				var top_category = '';
 				var count = 0;
@@ -87,9 +93,14 @@ module.exports = {
 				} else {
 					category_matches[top_category] += ','+user_id;
 				}
-	   			
-	   			this_.classifyUsers(app, rows, ++cursor);
+			} else {
+				if (config.verbose) {
+					console.log((user_id+' had no tweets! May only have replies.').warn);
+				}
 			}
+
+			// Continue classifying
+			this_.classifyUsers(app, rows, ++cursor);
 		}
 	},
 
@@ -107,7 +118,7 @@ module.exports = {
 			// Read the contains of the files
 			fs.readFile(file, 'utf8', function (err,data) {
 				if (err) {
-					return console.log(err);
+					return console.log(err.error);
 				}
 
 				// Creat category index from file name
@@ -125,9 +136,9 @@ module.exports = {
 
 		// TODO: How can this be triggered after adding docs above?
 		setTimeout(function() {
-			console.log('Training starting...');
+			console.log('Training starting...'.info);
 			classifier.train();
-			console.log('Training done.');
+			console.log('Training done.'.info);
 
 			console.log('Saving classifier to file...');
 			classifier.save('classifier.json', function(err, classifier) {

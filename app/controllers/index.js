@@ -5,8 +5,15 @@ var nlp            = require('../lib/nlp');
 var db_manager     = require('../lib/db_manager');
 var user_match     = require('../lib/user_match');
 
+var profanity = require('../lib/validator');
+
 module.exports = function(app) {
+
 	app.get('/', function(req, res){
+		res.render('index');
+	});
+
+	app.get('/search', function(req, res){
 
 		// Get settings to show on page
 		db_manager.getSettings(search);
@@ -20,7 +27,7 @@ module.exports = function(app) {
 			gnip.search(row.search, row.start_date, row.end_date);
 		}
 
-		res.render('index');
+		res.render('ajax', { request: 'search' });
 	});
 
 	// TODO: Change to POST
@@ -30,37 +37,60 @@ module.exports = function(app) {
 		db_manager.getAllUncategorizedValidUsers(classify);
 
 		function classify(err, rows) {
-			console.log("row size:"+rows.length);
 			if (err) {
 				db_manager.log(err);
 				return;
 			}
+			console.log('Begin classifying users...'.info);
 			nlp.classifyUsers(app, rows);
 		}
 
-		res.render('index');
+		res.render('ajax', { request: 'classify' });
 	});
 
 	// TODO: Change to POST
 	app.get('/match', function(req, res) {
 		user_match.matchUsers();
-		res.render('index');
+		res.render('ajax', { request: 'match' });
 	});
 
 	//
 	app.get('/send', function(req, res) {
-		// Check if all users exist and get their latest screennames
-		db_manager.getAllValidUsers(confirm);
+		
+		// Get all valid users for existance check
+		db_manager.getAllValidUsers(lookup);
 
-		function confirm(err, rows) {
+		function lookup(err, rows) {
+
+			// Separate the user IDs into arrays of 100 to make a minimal amount of users/lookup calls
+			var lookup_array = new Array();
+			for (var i = 0; i < rows.length; i++) {
+				if (i % 100 == 0) {
+					lookup_array.push(new Array());
+				}
+				lookup_array[lookup_array.length-1].push(rows[i].user_id);
+			}
+
+			TwitterWrapper.usersLookup(lookup_array, setScreennames);
+
+			//console.log(lookup_array);
 			
+			// Check if all users exist and get their latest screennames
 
 			// Add callback and mark any users as invalid if they no longer exist
 			// Continue with user dataset to start sending
 
-			TwitterWrapper.sendMatch(user1, user2, template);
+			//TwitterWrapper.sendMatch(user1, user2, template);
+		}
+
+		function setScreennames(screennames) {
+			db_manager.updateUserScreennames(screennames, queueSend);
+
+			function queueSend() {
+				console.log('queue send'.info);
+			}
 		}
 		
-		res.render('index');
+		res.render('ajax', { request: 'send' });
 	});
 };

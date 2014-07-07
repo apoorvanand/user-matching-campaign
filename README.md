@@ -1,7 +1,7 @@
-node-user-match
+node-mashable-usermatch
 ===============
 
-A timed response app for hashtag campaigns.  This version is specifically for matching users by interests.
+A timed response app for hashtag campaigns.  This version is specifically for matching users by interests for Mashable.
 
 How it works
 ------------
@@ -23,13 +23,11 @@ Run the app
 
 Todo
 ----
-1. Send function for matches
-2. Check that users exist before sending out tweets
-3. More appropriate responses for routes
-4. Better way to import the corpus (i.e. don't use a timeout?)
-5. Check that all requires are necessary
-6. Add action to clear out database tables after matches are sent
-7. If possible, add a function that checks status of previous action to make sure the current action can run
+1. Check that users exist before sending out tweets
+2. Better way to import the corpus (i.e. don't use a timeout?)
+3. Check that all requires are necessary
+4. Add action to clear out database tables after matches are sent
+5. If possible, add a function that checks status of previous action to make sure the current action can run
 
 Gnip Dates
 ----------

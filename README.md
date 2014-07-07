@@ -33,8 +33,8 @@ Todo
 
 Gnip Dates
 ----------
-Start - 201406120400
-To Friday - 201406270401
+Start - 201406120400<br />
+To Friday - 201406270401<br />
 Thru Sunday - 201406300401
 
 Mashable Publicity

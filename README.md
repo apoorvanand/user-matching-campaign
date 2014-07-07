@@ -36,3 +36,8 @@ Gnip Dates
 Start - 201406120400
 To Friday - 201406270401
 Thru Sunday - 201406300401
+
+Mashable Publicity
+------------------
+http://mashable.com/2014/06/13/1connection-social-media-day/
+http://mashable.com/2014/07/02/1connection-social-media-day-recap/

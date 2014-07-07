@@ -39,5 +39,5 @@ Thru Sunday - 201406300401
 
 Mashable Publicity
 ------------------
-<http://mashable.com/2014/06/13/1connection-social-media-day/>
+<http://mashable.com/2014/06/13/1connection-social-media-day/><br />
 <http://mashable.com/2014/07/02/1connection-social-media-day-recap/>

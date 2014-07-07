@@ -54,5 +54,51 @@ module.exports = {
 				this_.search(query, from_date, to_date, max_results, result.next);
 			}
 		}).auth(config.gnip.user, config.gnip.pass, true);
-	}
+	},
+
+	/*
+	 * count         - Use the Gnip API to get a count with a query, timeframe, etc.
+	 *   query       - The search string (#twitter)
+	 *   from_date   - Starting date in the format YYYYMMDDHHMM (201401010001)
+	 *   to_date     - Ending date in the format YYYYMMDDHHMM (201406170001)
+	 *   bucket      - "hourly" by default.  All option: "day", "hour", "minute"
+	 * 
+	*/
+	count: function(query, from_date, to_date, bucket) {
+		var this_  = this;
+		var bucket = bucket || 'hourly';
+
+		var url = 'https://search.gnip.com/accounts/' + config.gnip.account + '/search/prod/counts.json';
+
+		var query_string = {
+			'publisher' : 'twitter',
+			'query'     : query,
+			'bucket'    : bucket,
+			'fromDate'  : from_date,
+			'toDate'    : to_date
+		};
+
+		// Make the search HTTP request
+		console.log('Making Gnip count...'.info);
+		request.get(url, { 'qs': query_string }, function (error, response, body) {
+			console.log('Gnip count done.'.info);
+
+			// Log any error
+			if (error) {
+				db_manager.log(error);
+			}
+
+			// Parse the result and pass the tweets to the DB manager to save
+			var result = JSON.parse(body);
+
+			var count = 0;
+			for (index in result.results) {
+				count += result.results[index].count;
+			}
+
+			// Simply print the output
+			console.log(count);
+
+		}).auth(config.gnip.user, config.gnip.pass, true);
+	},
 }

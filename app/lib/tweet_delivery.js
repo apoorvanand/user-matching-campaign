@@ -7,17 +7,18 @@ module.exports = {
 		var this_ = this;
 		cursor = cursor || 0;
 
-		matches = new Array();
-		matches.push({ id: 1525,
-			user_id1: '987121',
-			user_name1: 'jbulava',
-			user_id2: '158412624',
-			user_name2: 'nlgrenfell',
-			category: '',
-			sent_match: 0 });
+		// Hardcoding for testing the sending of tweets
+		// TODO: make this a switch/flag
+		// matches = new Array();
+		// matches.push({ id: 1525,
+		// 	user_id1: '987121',
+		// 	user_name1: 'jbulava',
+		// 	user_id2: '158412624',
+		// 	user_name2: 'nlgrenfell',
+		// 	category: '',
+		// 	sent_match: 0 });
 
-
-		if (cursor < 1 /*matches.length*/) {
+		if (cursor < matches.length) {
 			// Fill in the template
 			var tweet = template.replace('{{user1}}', matches[cursor].user_name1).replace('{{user2}}', matches[cursor].user_name2);
 

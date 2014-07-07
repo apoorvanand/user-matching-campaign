@@ -75,7 +75,7 @@ module.exports = {
 
 			// Check for error
 			if (err) {
-				console.log(err.message.error);
+				console.log(err.error);
 				db_manager.log(err.message);
 
 				// Check for rate limit error

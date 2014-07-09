@@ -3,8 +3,8 @@ module.exports = {
   // Use console logs
 	verbose: true, 
 	
-	// by default, system does not send tweets; just simulates
-	send_tweets: true,
+	// by default, system does not send tweets; just simulates it
+	send_tweets: false,
 
   // credentials to log into local server
 	basic_auth: {

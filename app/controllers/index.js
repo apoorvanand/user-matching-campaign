@@ -111,12 +111,17 @@ module.exports = function(app) {
 		}
 
 		function getMatches(err, settings) {
+		
 			// GET matches not sent where usernames are both not null
-			console.log('Start sending tweets...'.info);
 			db_manager.getMatchesToSend(startSending);
 
 			function startSending(err, matches) {
-				tweetDelivery.sendTweets(matches, settings.tweet);
+			  if (config.send_tweets){
+			    console.log('Start sending tweets...'.info);
+  				tweetDelivery.sendTweets(matches, settings.tweet);
+  			} else {
+          console.log('MOCK: Not sending tweets... (Update config.sent_tweets to really send)'.info);
+  			}
 			}
 		}
 

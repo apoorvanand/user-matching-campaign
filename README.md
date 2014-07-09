@@ -1,25 +1,36 @@
 node-mashable-usermatch
 ===============
 
-A timed response app for hashtag campaigns.  This version is specifically for matching users by interests for Mashable.
+A timed response app for hashtag campaigns. This version is specifically for matching users by interests for Mashable.
+
+Requirements
+------------
+
+This codebase has been tested with Node.js version v0.10.29
 
 How it works
 ------------
+
 1. GNIP Historical Powertrack is used to retrieve all tweets that used a hashtag in a certain timeframe.
 2. Tweets are processed.  The code run on this dataset is the piece that changes from project to project.
 3. @mentions are sent to participants.
 
+Installation
+------------
+
 Install the Grunt CLI
 
-	npm install -g grunt-cli
+	sudo npm install -g grunt-cli
 
 Install dependencies
 
-    npm install
+  sudo npm install
   
 Run the app
 
-    grunt
+  grunt
+  
+Open site in browser: http://localhost:3000/
 
 Todo
 ----

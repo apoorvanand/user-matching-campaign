@@ -1,24 +1,28 @@
 module.exports = {
 	verbose: true, // Use console logs
 
+  // credentials to log into local server
 	basic_auth: {
-		user:     '',
-		password: ''
+		user:     'admin',
+		password: 'password'
 	},
 
-	twitter: {
-		consumer_key:         '',
-		consumer_secret:      '',
-		access_token:         '',
-		access_token_secret:  ''
-	},
-
+  // credentials to query tweets from gnip
+  // go to http://gnip.com/ to get an account. 
 	gnip: {
 		user: '',
 		pass: '',
 		account: '',
 		service_username: ''
 	},
+
+  // credentials to post to twitter 
+  twitter: {
+    consumer_key:         '',
+    consumer_secret:      '',
+    access_token:         '',
+    access_token_secret:  ''
+  },
 
 	rate_limits: {
 		statuses_update: 15

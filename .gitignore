@@ -35,7 +35,3 @@ classifier.json
 
 #Database files
 *.db
-
-*profanity keyword file
-profanity.txt
-profanity.js

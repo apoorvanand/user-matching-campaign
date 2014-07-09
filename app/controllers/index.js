@@ -11,36 +11,13 @@ var profanity = require('../lib/validator');
 module.exports = function(app) {
 
 	app.get('/', function(req, res){
-		res.render('index');
 
-/*
-		var db = new sqlite.Database('mashable.db');
-		db.all("SELECT * FROM valid_users WHERE top_category != '' AND top_category IS NOT NULL", printIt);
-		db.close();
+		// Get public settings to show on page
+		db_manager.getSettings(render);
 
-		function printIt(err, rows) {
-
-			var categories = {};
-
-			for (var i = rows.length - 1; i >= 0; i--) {
-				console.log(rows[i].user_id+' '+rows[i].top_category);
-
-
-					if (!categories[rows[i].top_category]) {
-						categories[rows[i].top_category] = rows[i].user_id;
-					} else {
-						categories[rows[i].top_category] = categories[rows[i].top_category] + ',' + rows[i].user_id;
-					}
-
-
-
-			};
-
-			console.log(categories);
+		function render(err, row) {
+			res.render('index', { settings: row });
 		}
-*/
-
-
 	});
 
 	app.get('/search', function(req, res){

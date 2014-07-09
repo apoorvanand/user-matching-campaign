@@ -14,9 +14,9 @@
 	app.SearchView.prototype.init = function () {
 		var that = this;
 
-		$('.datetimepicker').datetimepicker({
-        	format: 'YYYY-MM-DD hh:mm',
-		})
+		//$('.datetimepicker').datetimepicker({
+       // 	format: 'YYYY-MM-DD hh:mm',
+		//})
 
 		this.startBtn.click(function () {
 			that.startSearch();

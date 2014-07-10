@@ -4,6 +4,7 @@
 	  this.el = $(id);
 	  //this.startBtn = this.el.find('.btn-success');
 	  this.button_search   = this.el.find('.btn-search');
+	  this.button_export   = this.el.find('.btn-export');
 	  this.button_classify = this.el.find('.btn-classify');
 	  this.button_match    = this.el.find('.btn-match');
 	  this.button_send     = this.el.find('.btn-send');
@@ -17,6 +18,10 @@
 		this.button_search.click(function () {
 			that.startSearch();
 		});
+
+		this.button_export.click(function () {
+			that.startExport();
+		});		
 
 		this.button_classify.click(function () {
 			that.startClassify();
@@ -44,6 +49,24 @@
 	};
 
 	app.ActionsView.prototype.onSearchComplete = function (res) {
+		// do something
+		console.log(res);
+	};
+
+	app.ActionsView.prototype.startExport = function () {
+		var that = this;
+
+		window.location.href = './export';
+	 //    $.ajax({
+		// 	url: '/export',
+		// 	type: 'GET',
+		// 	success: function(data) {
+		// 		that.onExportComplete(data);
+		// 	}
+		// });
+	};
+
+	app.ActionsView.prototype.onExportComplete = function (res) {
 		// do something
 		console.log(res);
 	};

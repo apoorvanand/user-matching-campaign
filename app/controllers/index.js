@@ -37,6 +37,30 @@ module.exports = function(app) {
 		res.render('ajax', { request: 'search' });
 	});
 
+	app.get('/export', function(req, res) {
+		// Get date for filename
+		var d = new Date();
+
+		// Set CSV headers
+		res.header('content-type','text/csv'); 
+		res.header('content-disposition', 'attachment; filename=Tweets - '+d.toString()+'.csv');
+
+		// Get tweets
+		db_manager.getAllTweets(function(err, rows) {
+			var body = '';
+
+			for (var i = 0; i < rows.length; i++) {
+				// Always quote tweet and display name
+				rows[i].tweet_body   = '"'+rows[i].tweet_body.replace(/"/g, '""')+'"';
+				rows[i].display_name = '"'+rows[i].display_name.replace(/"/g, '""')+'"';
+
+				// Add to the response
+				body += rows[i].id+','+rows[i].tweet_id+','+rows[i].tweet_body+','+rows[i].user_id+','+rows[i].display_name+','+rows[i].screenname+','+rows[i].valid_user+','+rows[i].valid_tweet+"\n";
+			};
+			res.send(body);
+		});
+	});
+
 	// TODO: Change to POST
 	app.get('/classify', function(req, res) {
 

@@ -3,6 +3,9 @@ module.exports = {
   // Use console logs
 	verbose: true, 
 	
+	// User 'dev' or 'prod'; only uses live data in 'prod'
+	mode: 'dev',
+	
 	// by default, system does not send tweets; just simulates it
 	send_tweets: false,
 

@@ -116,12 +116,8 @@ module.exports = function(app) {
 			db_manager.getMatchesToSend(startSending);
 
 			function startSending(err, matches) {
-			  if (config.send_tweets){
-			    console.log('Start sending tweets...'.info);
-  				tweetDelivery.sendTweets(matches, settings.tweet);
-  			} else {
-          console.log('MOCK: Not sending tweets... (Update config.sent_tweets to really send)'.info);
-  			}
+		    console.log('Start sending tweets...'.info);
+				tweetDelivery.sendTweets(matches, settings.tweet);
 			}
 		}
 

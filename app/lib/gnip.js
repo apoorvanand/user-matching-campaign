@@ -35,7 +35,7 @@ module.exports = {
 		}  
 
 		// Make the search HTTP request
-		console.log('Making Gnip search...'.info);
+		console.log('Making Gnip search ('+query+')...'.info);
 		request.get(url, { 'qs': query_string }, function (error, response, body) {
 			console.log('Gnip search done.'.info);
 

@@ -29,7 +29,6 @@ module.exports = {
 			// Send the tweet
       if (config.send_tweets){
         TwitterWrapper.postTweet(tweet, confirmTweet);
-        confirmTweet();
       } else {
         console.log('MOCK: Suppressed tweet (Update config.sent_tweets to really send)'.info);
       }

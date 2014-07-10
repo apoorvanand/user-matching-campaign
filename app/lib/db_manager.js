@@ -229,6 +229,18 @@ module.exports = {
 		});
 	},
 
+	updateTemplate: function(template, callback) {
+		var db = new sqlite.Database('mashable.db');
+		db.run("UPDATE settings SET tweet = ?", [template], callback);
+		db.close();
+	},
+
+	updateSettings: function(post, callback) {
+		var db = new sqlite.Database('mashable.db');
+		db.run("UPDATE settings SET search = ?, start_date = ?, end_date = ?", [post.query, post.start_date, post.end_date], callback);
+		db.close();
+	},
+
 	markSent: function(match_id, callback) {
 		var db = new sqlite.Database('mashable.db');
 		db.run("UPDATE matches SET sent_match = 1 WHERE id = ?", [match_id], function(err) {

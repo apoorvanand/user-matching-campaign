@@ -3,10 +3,10 @@
 	app.SearchView = function (id) {
 	  this.el = $(id);
 	  //this.startBtn = this.el.find('.btn-success');
-	  this.startBtn = this.el.find('.btn-search');
+	  this.saveSettingsBtn = this.el.find('#save-settings');
 	  this.startDateInput = this.el.find('.startDate');
 	  this.endDateInput = this.el.find('.endDate');
-	  this.hashTagInput = this.el.find('.hashtag');
+	  this.queryInput = this.el.find('.search');
 
 	  this.init();
 	};
@@ -14,45 +14,63 @@
 	app.SearchView.prototype.init = function () {
 		var that = this;
 
-		//$('.datetimepicker').datetimepicker({
-       // 	format: 'YYYY-MM-DD hh:mm',
-		//})
-
-		this.startBtn.click(function () {
-			that.startSearch();
+		this.saveSettingsBtn.click(function () {
+			that.saveSettings();
 		});
 	};
 
-	app.SearchView.prototype.startSearch = function () {
+	app.SearchView.prototype.saveSettings = function () {
 		var that = this;
-		
-		console.log(this.hashTagInput.val());
+
+		if (this.startDateInput.val() == '' || this.endDateInput.val() == '') {
+			console.log('invalid dates');
+			return;
+		}
+
+		// Process dates
+		var start_date = new Date(this.startDateInput.val());
+		var start_date_str = start_date.getFullYear()
+			 + ('0' + (start_date.getMonth()+1)).slice(-2)
+			 + ('0' + start_date.getDate()).slice(-2)
+			 + ('0' + start_date.getHours()).slice(-2)
+			 + ('0' + start_date.getMinutes()).slice(-2);
+
+		var end_date = new Date(this.endDateInput.val());
+		var end_date_str = end_date.getFullYear()
+			 + ('0' + (end_date.getMonth()+1)).slice(-2)
+			 + ('0' + end_date.getDate()).slice(-2)
+			 + ('0' + end_date.getHours()).slice(-2)
+			 + ('0' + end_date.getMinutes()).slice(-2);
 
 		var data = {
-			fromDate: moment(this.startDateInput.val()).format('YYYYMMDDhhmmss') ,
-			toDate: moment(this.endDateInput.val()).format('YYYYMMDDhhmmss') ,
-			query: this.hashTagInput.val()
+			start_date: start_date_str,
+			end_date: end_date_str,
+			query: this.queryInput.val()
 		};
 
-		console.log(data);
-
 	    $.ajax({
-			url: '/search',
-			type: 'GET',
+			url: '/settings/search',
+			type: 'POST',
 			data: data,
 			dataType: 'json',
 			success: function(data) {
-				that.onSearchComplete(data);
+				that.onUpdateSettingsComplete(data);
+			},
+			error: function(data) {
+				that.onUpdateSettingsComplete(data);
 			}
 		});
 	};
 
-	app.SearchView.prototype.onSearchComplete = function (res) {
-
-		// do something
-
-		console.log(res);
-
+	app.SearchView.prototype.onUpdateSettingsComplete = function (res) {
+		var n = noty({
+            text        : res.responseText,
+            type        : 'success',
+            dismissQueue: true,
+            timeout: 2000,
+            layout      : 'bottomLeft',
+            theme       : 'defaultTheme'
+        });
 	};
 
 })();

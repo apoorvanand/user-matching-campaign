@@ -22,6 +22,8 @@
 	<script src="/javascripts/CategoriesView.js"></script>
 	<script src="/javascripts/SearchView.js"></script>
 	<script src="/javascripts/TweetView.js"></script>
+
+	<script type="text/javascript" src="/javascripts/noty/packaged/jquery.noty.packaged.min.js"></script>
 </head>
 <body>
     
@@ -86,7 +88,7 @@
 
 							<div class="form-group">
 								<label for="search-query">Query</label>
-								<input type='text' class="hashtag form-control" id="search-query" value="<%= settings.search %>" />
+								<input type='text' class="search form-control" id="search-query" value="<%= settings.search %>" />
 							</div>
 
 							<div class="form-inline">
@@ -108,14 +110,31 @@
 							</div>
 
 							<script>
-								$('.datetimepicker').datetimepicker({
-        							format: 'YYYY-MM-DD hh:mm'
+								var start = "<%= settings.start_date %>00";
+								var start_str = (start.substr(4,2)) + '/'
+											+ start.substr(6,2) + '/'
+											+ start.substr(0,4) + ' '
+											+ start.substr(8,2) + ':'
+											+ start.substr(10,2);
+
+								var end = "<%= settings.end_date %>00";
+								var end_str = (end.substr(4,2)) + '/'
+											+ end.substr(6,2) + '/'
+											+ end.substr(0,4) + ' '
+											+ end.substr(8,2) + ':'
+											+ end.substr(10,2);
+
+								$('#startDate').datetimepicker({
+        							format: 'YYYY-MM-DD hh:mm',
+        							defaultDate: start_str
 								});
-								$('#startDate').data("DateTimePicker").setDate("<%= settings.start_date %>00");
-								$('#endDate').data("DateTimePicker").setDate("<%= settings.end_date %>00");
+								$('#endDate').datetimepicker({
+        							format: 'YYYY-MM-DD hh:mm',
+        							defaultDate: end_str
+								});
 							</script>
 							
-            				<button type="submit" class="btn btn-success">Save Settings</button>
+            				<button type="submit" class="btn btn-success" id="save-settings">Save Settings</button>
 
 						</div>
 					</div>
@@ -136,7 +155,7 @@
 							<textarea class="form-control" rows="3" id="tweet-template"><%= settings.tweet %></textarea>
 							<span class="help-block">The reply tweet sent to all paired users.  {{user1}} and {{user2}} will be replaced by the screen names of the matched users.</span>
 						</div>
-            			<button id="saveTweetBtn" type="submit" class="btn btn-success">Save Template</button>
+            			<button id="saveTemplateBtn" type="submit" class="btn btn-success">Save Template</button>
 					</div>
 				</div>
 	        </div>

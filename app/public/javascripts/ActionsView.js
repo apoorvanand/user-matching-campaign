@@ -57,13 +57,6 @@
 		var that = this;
 
 		window.location.href = './export';
-	 //    $.ajax({
-		// 	url: '/export',
-		// 	type: 'GET',
-		// 	success: function(data) {
-		// 		that.onExportComplete(data);
-		// 	}
-		// });
 	};
 
 	app.ActionsView.prototype.onExportComplete = function (res) {

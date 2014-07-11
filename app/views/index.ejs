@@ -38,8 +38,8 @@
 	<div class="container">
 
 		<div class="row">
-	        <div class='col-sm-12'>
-	        	<div id="actionsView" class="panel panel-danger">
+	        <div class='col-sm-6'>
+	        	<div id="actionsView" class="panel panel-default">
 	        		<div class="panel-heading">Campaign Actions</div>
 					<div class="panel-body text-center">
             			<button class="btn btn-success btn-search">Gather Tweets</button>
@@ -50,38 +50,36 @@
 					</div>
 				</div>
 	        </div>
+	        
+            <div class='col-sm-6'>
+
+                <div id="statusView" class="panel panel-default">
+                    <div class="panel-heading">Campaign Status</div>
+                    <div class="panel-body">
+                        <ul class="list-unstyled">
+                            <li><span class="glyphicon glyphicon-ok"></span> Gathered all tweets</li>
+                            <li><span class="glyphicon glyphicon-exclamation-sign"></span> 5 users were flagged</li>
+                            <li><span class="glyphicon glyphicon-exclamation-sign"></span> 3 tweets were flagged</li>
+                            <li><span class="glyphicon glyphicon-ok"></span> Classified all valid users</li>
+                            <li><span class="glyphicon glyphicon-ok"></span> Matched all users</li>
+                            <li><span class="glyphicon glyphicon-ok"></span> Sent all tweets</li>
+                        </ul>
+
+                        <div class="final-message" class="font-size-large" style="font-weight: bold;">
+                            <span class="glyphicon glyphicon-thumbs-up"></span> Mission Accomplished!
+                        </div>
+                    </div>
+                </div>
+
+            </div>
 	    </div>
 
 	    <div class="row">
 
 	        <div class='col-sm-6'>
 
-	        	<div id="statusView" class="panel panel-default">
-	        		<div class="panel-heading">Campaign Status</div>
-					<div class="panel-body">
-						<ul class="list-unstyled">
-            				<li><span class="glyphicon glyphicon-ok"></span> Gathered all tweets</li>
-            				<li><span class="glyphicon glyphicon-exclamation-sign"></span> 5 users were flagged</li>
-            				<li><span class="glyphicon glyphicon-exclamation-sign"></span> 3 tweets were flagged</li>
-            				<li><span class="glyphicon glyphicon-ok"></span> Classified all valid users</li>
-            				<li><span class="glyphicon glyphicon-ok"></span> Matched all users</li>
-            				<li><span class="glyphicon glyphicon-ok"></span> Sent all tweets</li>
-            			</ul>
-
-            			<div class="final-message" class="font-size-large" style="font-weight: bold;">
-            				<span class="glyphicon glyphicon-thumbs-up"></span> Mission Accomplished!
-            			</div>
-					</div>
-				</div>
-
-	        </div>
-
-			
-
-	        <div class='col-sm-6'>
-
 	        	<div id="searchView" class="searchView panel panel-default">
-	        		<div class="panel-heading">Search Settings</div>
+	        		<div class="panel-heading">Step 1: Tweet/User Query</div>
 					<div class="panel-body">
 
 						<div class="form-group">
@@ -144,33 +142,37 @@
 
 	    </div>
 
-	    <div class="row">
+        <div class="row">
 
-	    	<div class='col-sm-6'>
-	        	<div id="tweetView" class="panel panel-default">
-	        		<div class="panel-heading">Message Settings</div>
-					<div class="panel-body">
-						<div class="form-group">
-							<label for="tweet-template">Tweet Template</label>
-							<textarea class="form-control" rows="3" id="tweet-template"><%= settings.tweet %></textarea>
-							<span class="help-block">The reply tweet sent to all paired users.  {{user1}} and {{user2}} will be replaced by the screen names of the matched users.</span>
-						</div>
-            			<button id="saveTemplateBtn" type="submit" class="btn btn-success">Save Template</button>
-					</div>
-				</div>
-	        </div>
+            <div class='col-sm-6'>
+                <div id="categoriesView" class="panel panel-default">
+                    <div class="panel-heading">Step 2: Match Users (Optional)</div>
+                    <div class="panel-body">
+                        <div class="label-container">
+                        </div>
+                        <!--<button id="reloadBtn" type="submit" class="btn btn-success">Reload</button>-->
+                    </div>
+                </div>
+            </div>
+         </div>
+         
+        <div class="row">
 
-	        <div class='col-sm-6'>
-	        	<div id="categoriesView" class="panel panel-default">
-	        		<div class="panel-heading">Classifications from Corpus</div>
-					<div class="panel-body">
-						<div class="label-container">
-						</div>
-            			<!--<button id="reloadBtn" type="submit" class="btn btn-success">Reload</button>-->
-					</div>
-				</div>
-	        </div>
-	     </div>
+            <div class='col-sm-6'>
+                <div id="tweetView" class="panel panel-default">
+                    <div class="panel-heading">Step 3: Send Tweets</div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label for="tweet-template">Tweet Template</label>
+                            <textarea class="form-control" rows="3" id="tweet-template"><%= settings.tweet %></textarea>
+                            <span class="help-block">The reply tweet sent to all paired users.  {{user1}} and {{user2}} will be replaced by the screen names of the matched users.</span>
+                        </div>
+                        <button id="saveTemplateBtn" type="submit" class="btn btn-success">Save Template</button>
+                    </div>
+                </div>
+            </div>
+
+         </div>
 
 	</div>
 

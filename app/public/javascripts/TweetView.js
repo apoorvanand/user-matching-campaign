@@ -5,6 +5,7 @@
 
 	  this.saveTemplateBtn = this.el.find('#saveTemplateBtn');
 	  this.templateInput   = this.el.find('#tweet-template');
+    this.button_send     = this.el.find('.btn-send');
 
 	  this.init();
 	};
@@ -15,6 +16,11 @@
 		this.saveTemplateBtn.click(function () {
 			that.saveTemplate();
 		});
+		
+    this.button_send.click(function () {
+      that.startSend();
+    });
+
 	};
 
 	app.TweetView.prototype.saveTemplate = function () {
@@ -48,5 +54,23 @@
             theme       : 'defaultTheme'
         });
 	};
+	
+
+  app.ActionsView.prototype.startSend = function () {
+    var that = this;
+
+      $.ajax({
+      url: '/send',
+      type: 'GET',
+      success: function(data) {
+        that.onSendComplete(data);
+      }
+    });
+  };
+
+  app.ActionsView.prototype.onSendComplete = function (res) {
+    // do something
+    console.log(res);
+  };
 
 })();

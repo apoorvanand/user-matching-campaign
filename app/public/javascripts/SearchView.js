@@ -7,6 +7,8 @@
 	  this.startDateInput = this.el.find('.startDate');
 	  this.endDateInput = this.el.find('.endDate');
 	  this.queryInput = this.el.find('.search');
+    this.button_search   = this.el.find('.btn-search');
+    this.button_export   = this.el.find('.btn-export');
 
 	  this.init();
 	};
@@ -17,6 +19,15 @@
 		this.saveSettingsBtn.click(function () {
 			that.saveSettings();
 		});
+		
+    this.button_search.click(function () {
+      that.startSearch();
+    });
+
+    this.button_export.click(function () {
+      that.startExport();
+    });   
+
 	};
 
 	app.SearchView.prototype.saveSettings = function () {
@@ -72,5 +83,34 @@
             theme       : 'defaultTheme'
         });
 	};
+	
+
+  app.SearchView.prototype.startSearch = function () {
+    var that = this;
+
+      $.ajax({
+      url: '/search',
+      type: 'GET',
+      success: function(data) {
+        that.onSearchComplete(data);
+      }
+    });
+  };
+
+  app.SearchView.prototype.onSearchComplete = function (res) {
+    // do something
+    console.log(res);
+  };
+
+  app.SearchView.prototype.startExport = function () {
+    var that = this;
+
+    window.location.href = './export';
+  };
+
+  app.SearchView.prototype.onExportComplete = function (res) {
+    // do something
+    console.log(res);
+  };
 
 })();

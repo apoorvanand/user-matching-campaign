@@ -6,6 +6,8 @@
 	  this.el = $(id);
 	  this.labelContainer = this.el.find('.label-container');
 	  this.reloadBtn = this.el.find('.btn-success');
+    this.button_classify = this.el.find('.btn-classify');
+    this.button_match    = this.el.find('.btn-match');
 
 	  this.init();
 	};
@@ -16,6 +18,14 @@
 		this.reloadBtn.click(function () {
 			that.load();
 		});
+
+    this.button_classify.click(function () {
+      that.startClassify();
+    });
+
+    this.button_match.click(function () {
+      that.startMatch();
+    });
 
 		that.load();
 	};
@@ -42,5 +52,41 @@
 	  		that.labelContainer.append(labelHtml.replace('{{category}}', cat));
 	  	});
 	}
+	
+
+  app.CategoriesView.prototype.startClassify = function () {
+    var that = this;
+
+      $.ajax({
+      url: '/classify',
+      type: 'GET',
+      success: function(data) {
+        that.onClassifyComplete(data);
+      }
+    });
+  };
+
+  app.CategoriesView.prototype.onClassifyComplete = function (res) {
+    // do something
+    console.log(res);
+  };
+
+  app.CategoriesView.prototype.startMatch = function () {
+    var that = this;
+
+      $.ajax({
+      url: '/match',
+      type: 'GET',
+      success: function(data) {
+        that.onMatchComplete(data);
+      }
+    });
+  };
+
+  app.CategoriesView.prototype.onMatchComplete = function (res) {
+    // do something
+    console.log(res);
+  };
+
 
 })();

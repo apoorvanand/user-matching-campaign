@@ -60,6 +60,14 @@ module.exports = function(app) {
 			res.send(body);
 		});
 	});
+	
+  app.get('/flush', function(req, res) {
+
+    // Flush tweets
+    db_manager.flushAllTweets(function(err, rows) {
+      res.render('ajax', { request: 'Tweets flushed' });
+    });
+  });
 
 	// TODO: Change to POST
 	app.get('/classify', function(req, res) {

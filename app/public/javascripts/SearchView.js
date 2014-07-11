@@ -9,6 +9,7 @@
 	  this.queryInput = this.el.find('.search');
     this.button_search   = this.el.find('.btn-search');
     this.button_export   = this.el.find('.btn-export');
+    this.button_flush   = this.el.find('.btn-flush');
 
 	  this.init();
 	};
@@ -26,6 +27,10 @@
 
     this.button_export.click(function () {
       that.startExport();
+    });   
+
+    this.button_flush.click(function () {
+      that.startFlush();
     });   
 
 	};
@@ -60,17 +65,17 @@
 		};
 
 	    $.ajax({
-			url: '/settings/search',
-			type: 'POST',
-			data: data,
-			dataType: 'json',
-			success: function(data) {
-				that.onUpdateSettingsComplete(data);
-			},
-			error: function(data) {
-				that.onUpdateSettingsComplete(data);
-			}
-		});
+  			url: '/settings/search',
+  			type: 'POST',
+  			data: data,
+  			dataType: 'json',
+  			success: function(data) {
+  				that.onUpdateSettingsComplete(data);
+  			},
+  			error: function(data) {
+  				that.onUpdateSettingsComplete(data);
+  			}
+		  });
 	};
 
 	app.SearchView.prototype.onUpdateSettingsComplete = function (res) {
@@ -111,6 +116,33 @@
   app.SearchView.prototype.onExportComplete = function (res) {
     // do something
     console.log(res);
+  };
+  
+  app.SearchView.prototype.startFlush = function () {
+    var that = this;
+
+      $.ajax({
+        url: '/flush',
+        type: 'GET',
+        dataType: 'json',
+        success: function(data) {
+          that.onFlushComplete(data);
+        },
+        error: function(data) {
+          that.onFlushComplete(data);
+        }
+      });
+  };
+  
+  app.SearchView.prototype.onFlushComplete = function (res) {
+    var n = noty({
+            text        : res.responseText,
+            type        : 'success',
+            dismissQueue: true,
+            timeout: 2000,
+            layout      : 'bottomLeft',
+            theme       : 'defaultTheme'
+        });
   };
 
 })();

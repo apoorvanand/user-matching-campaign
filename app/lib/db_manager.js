@@ -93,6 +93,12 @@ module.exports = {
 		db.all("SELECT * FROM tweets", callback);
 		db.close();
 	},
+	
+  flushAllTweets: function(callback) {
+    var db = new sqlite.Database('mashable.db');
+    db.all("DELETE FROM tweets", callback);
+    db.close();
+  },
 
 	getAllValidUsers: function(callback) {
 		var db = new sqlite.Database('mashable.db');

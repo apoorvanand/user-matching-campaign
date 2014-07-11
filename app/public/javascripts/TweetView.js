@@ -56,7 +56,7 @@
 	};
 	
 
-  app.ActionsView.prototype.startSend = function () {
+  app.TweetView.prototype.startSend = function () {
     var that = this;
 
       $.ajax({
@@ -68,7 +68,7 @@
     });
   };
 
-  app.ActionsView.prototype.onSendComplete = function (res) {
+  app.TweetView.prototype.onSendComplete = function (res) {
     // do something
     console.log(res);
   };

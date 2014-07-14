@@ -169,7 +169,7 @@
 							<div class="panel-body">
 								<div class="form-group">
 									<label for="tweet-template">Tweet Template for Matched Users</label>
-									<textarea class="form-control" rows="3" id="tweet-template"><%= settings.tweet %></textarea>
+									<textarea class="form-control" rows="3" id="tweet-match-template"><%= settings.tweet %></textarea>
 									<span class="help-block">The tweet sent to all paired users.  {{user1}} and {{user2}} will be replaced by the screen names of each user.</span>
 								</div>
 								<button id="saveMatchTemplateBtn" type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-save"></span> Save Template</button>
@@ -188,7 +188,7 @@
 					<div class="panel-body">
 						<div class="form-group">
 							<label for="tweet-template">Tweet Template for Individual @replies</label>
-							<textarea class="form-control" rows="3" id="tweet-template"><%= settings.tweet_direct %></textarea>
+							<textarea class="form-control" rows="3" id="tweet-direct-template"><%= settings.tweet_direct %></textarea>
 							<span class="help-block">The tweet sent to all users.  {{user}} will be replaced by the screen name of each user.</span>
 						</div>
 						<button id="saveDirectTemplateBtn" type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-save"></span> Save Template</button>

@@ -17,12 +17,10 @@
 		var that = this;
 
 		this.saveDirectTemplateBtn.click(function () {
-			console.log('click');
 			that.saveDirectTemplate();
 		});
 
 		this.saveMatchTemplateBtn.click(function () {
-			console.log('click');
 			that.saveMatchTemplate();
 		});
 		
@@ -44,7 +42,7 @@
 		};
 
 		$.ajax({
-			url: '/settings/direct_template',
+			url: '/settings/template_direct',
 			type: 'POST',
 			data: data,
 			dataType: 'json',
@@ -57,7 +55,7 @@
 		});
 	};
 
-	app.TweetView.prototype.onUpdateTemplateComplete = function (res) {
+	app.TweetView.prototype.onUpdateDirectTemplateComplete = function (res) {
 		var n = noty({
 			text        : res.responseText,
 			type        : 'success',
@@ -76,20 +74,20 @@
 		};
 
 		$.ajax({
-			url: '/settings/template',
+			url: '/settings/template_matches',
 			type: 'POST',
 			data: data,
 			dataType: 'json',
 			success: function(data) {
-				that.onUpdateTemplateComplete(data);
+				that.onUpdateMatchTemplateComplete(data);
 			},
 			error: function(data) {
-				that.onUpdateTemplateComplete(data);
+				that.onUpdateMatchTemplateComplete(data);
 			}
 		});
 	};
 
-	app.TweetView.prototype.onUpdateTemplateComplete = function (res) {
+	app.TweetView.prototype.onUpdateMatchTemplateComplete = function (res) {
 		var n = noty({
 			text        : res.responseText,
 			type        : 'success',

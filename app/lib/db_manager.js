@@ -216,7 +216,13 @@ module.exports = {
 		});
 	},
 
-	updateTemplate: function(template, callback) {
+	updateDirectTemplate: function(template, callback) {
+		var db = new sqlite.Database(databases.main);
+		db.run("UPDATE settings SET tweet_direct = ?", [template], callback);
+		db.close();
+	},
+
+	updateMatchTemplate: function(template, callback) {
 		var db = new sqlite.Database(databases.main);
 		db.run("UPDATE settings SET tweet = ?", [template], callback);
 		db.close();

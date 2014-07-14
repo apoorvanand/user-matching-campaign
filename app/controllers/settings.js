@@ -57,7 +57,7 @@ module.exports = function(app) {
 
 				// Save the template
 				if (post.template != undefined) {
-					db_manager.updateTemplate(post.template, function(err) {
+					db_manager.updateMatchTemplate(post.template, function(err) {
 						if (err) {
 							res.render('ajax', { request: 'template update failed, '+err.message });
 						} else {
@@ -90,7 +90,7 @@ module.exports = function(app) {
 
 				// Save the template
 				if (post.template != undefined) {
-					db_manager.updateTemplate(post.template, function(err) {
+					db_manager.updateDirectTemplate(post.template, function(err) {
 						if (err) {
 							res.render('ajax', { request: 'template update failed, '+err.message });
 						} else {

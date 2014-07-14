@@ -1,36 +1,39 @@
-node-mashable-usermatch
+node-talkback
 ===============
 
-A timed response app for hashtag campaigns. This version is specifically for matching users by interests for Mashable.
+A timed response app for hashtag campaigns. Originally designed for Mashable's #1Connection campaign.
 
 Requirements
 ------------
 
-This codebase has been tested with Node.js version v0.10.29
+This codebase has been tested with Node.js version v0.10.28
 
 How it works
 ------------
 
-1. GNIP Historical Powertrack is used to retrieve all tweets that used a hashtag in a certain timeframe.
-2. Tweets are processed.  The code run on this dataset is the piece that changes from project to project.
+1. The Gnip Search API is used to retrieve all tweets that use a hashtag in a certain timeframe.
+2. Tweets are processed.  The user matching portion of this project is what may differ from project to project.
 3. @mentions are sent to participants.
 
 Installation
 ------------
+If you do not have Node.js installed, you can download the download the latest from <http://nodejs.org/>
+<br /><br />
+Note: only preface these commands with 'sudo' if your Node.js was installed with root privileges.
 
 Install the Grunt CLI
 
-	sudo npm install -g grunt-cli
+	npm install -g grunt-cli
 
 Install dependencies
 
-  sudo npm install
+	npm install
   
 Run the app
 
-  grunt
+	grunt
   
-Open site in browser: http://localhost:3000/
+Open the application in a browser: http://localhost:3000/
 
 Todo
 ----
@@ -39,6 +42,7 @@ Todo
 3. Check that all requires are necessary
 4. Add action to clear out database tables after matches are sent
 5. If possible, add a function that checks status of previous action to make sure the current action can run
+6. Check for unfilled template variables before sending tweet
 
 Gnip Dates
 ----------

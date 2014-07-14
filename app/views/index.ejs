@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title></title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 
 	<link rel="stylesheet" href="/stylesheets/vendor/bootstrap.min.css">
 	<link rel="stylesheet" href="/stylesheets/vendor/bootstrap-theme.min.css">
@@ -26,23 +26,20 @@
 	<script type="text/javascript" src="/javascripts/noty/packaged/jquery.noty.packaged.min.js"></script>
 </head>
 <body>
-    
-    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-      <div class="container">
-        <div class="navbar-header">
-          <a class="navbar-brand" href="#">Tweet Campaign Dashboard</a>
-        </div>
-      </div>
-    </div>
+	
+	<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+		<div class="container">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#">Twitter Talkback</a>
+			</div>
+		</div>
+	</div>
 
 	<div class="container">
-
-	    <div class="row">
-
-	        <div class='col-sm-6'>
-
-	        	<div id="searchView" class="searchView panel panel-default">
-	        		<div class="panel-heading">Step 1: Query for Users/Tweets</div>
+		<div class="row">
+			<div class='col-sm-8'>
+				<div id="searchView" class="searchView panel panel-default">
+					<div class="panel-heading">Start: Query for Users/Tweets</div>
 					<div class="panel-body">
 
 						<div class="form-group">
@@ -56,21 +53,22 @@
 								<div class="form-group">
 									<label for="search-query">Start Date (GMT)</label>
 									<div class='input-group date datetimepicker' id='startDate' data-date-format="MM/DD/YYYY hh:mm A">
-							        	<input type='text' class="startDate form-control" id="start-date" />
-							        	<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-							    	</div>
+										<input type='text' class="startDate form-control" id="start-date" />
+										<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+									</div>
 								</div>
 
-							    <div class="form-group">
+								<div class="form-group">
 									<label for="search-query">End Date (GMT)</label>
 									<div class='input-group date datetimepicker' id='endDate' data-date-format="MM/DD/YYYY hh:mm A">
-							        	<input type='text' class="endDate form-control" id="end-date" />
-							        	<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-							    	</div>
+										<input type='text' class="endDate form-control" id="end-date" />
+										<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+									</div>
 								</div>
 							</div>
 
 							<script>
+								// Define start and end dates from database
 								var start = "<%= settings.start_date %>00";
 								var start_str = (start.substr(4,2)) + '/'
 											+ start.substr(6,2) + '/'
@@ -86,89 +84,121 @@
 											+ end.substr(10,2);
 
 								$('#startDate').datetimepicker({
-        							format: 'YYYY-MM-DD hh:mm',
-        							defaultDate: start_str
+									format: 'YYYY-MM-DD hh:mm',
+									defaultDate: start_str
 								});
 								$('#endDate').datetimepicker({
-        							format: 'YYYY-MM-DD hh:mm',
-        							defaultDate: end_str
+									format: 'YYYY-MM-DD hh:mm',
+									defaultDate: end_str
 								});
 							</script>
 
-                          <button type="submit" class="btn btn-success" id="save-settings">Save Terms</button>
-                            <button class="btn btn-success btn-search">Gather Tweets</button>
-                            <button class="btn btn-success btn-export">Export Tweets &nbsp;<span class="glyphicon glyphicon-download-alt"></span></button>
-                            <button class="btn btn-flush">Flush Tweets</button>
+						  <button type="submit" class="btn btn-primary" id="save-settings"><span class="glyphicon glyphicon-floppy-save"></span> Save Query and Times</button>
+
+						</div>
+					</div>
+					<div class="panel-footer text-right">
+						<button class="btn btn-success btn-search"><span class="glyphicon glyphicon-search"></span> Gather Tweets</button>
+						<button class="btn btn-success btn-export"><span class="glyphicon glyphicon-download-alt"></span> Export Tweets</button>
+						<button class="btn btn-danger btn-flush"><span class="glyphicon glyphicon-trash"></span> Flush Tweets</button>
+					</div>
+				</div>
+			</div>
+			
+			<div class='col-sm-4'>
+
+				<!--<div id="statusView" class="panel panel-default">
+					<div class="panel-heading">Campaign Status</div>
+					<div class="panel-body">
+						<ul class="list-unstyled">
+							<li><span class="glyphicon glyphicon-ok"></span> Gathered all tweets</li>
+							<li><span class="glyphicon glyphicon-exclamation-sign"></span> 5 users were flagged</li>
+							<li><span class="glyphicon glyphicon-exclamation-sign"></span> 3 tweets were flagged</li>
+							<li><span class="glyphicon glyphicon-ok"></span> Classified all valid users</li>
+							<li><span class="glyphicon glyphicon-ok"></span> Matched all users</li>
+							<li><span class="glyphicon glyphicon-ok"></span> Sent all tweets</li>
+						</ul>
+
+						<div class="final-message" class="font-size-large" style="font-weight: bold;">
+							<span class="glyphicon glyphicon-thumbs-up"></span> Mission Accomplished!
+						</div>
+					</div>
+				</div>-->
+
+				<div id="configView" class="panel panel-default">
+					<div class="panel-heading">Account Settings</div>
+					<div class="panel-body">
+						<ul class="nav nav-pills nav-stacked">
+							<li><a href="">Setup your Twitter credentials</a></li>
+							<li><a href="">Setup your Gnip credentials</a></li>
+						</ul>
+						<!--<b>Mode</b><br />
+						<div class="btn-group" data-toggle="buttons">
+							<label class="btn btn-primary active">
+							<input type="radio" name="options" id="option1" checked> Development
+							</label>
+							<label class="btn btn-warning">
+							<input type="radio" name="options" id="option2"> Production
+							</label>
+						</div>-->
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+
+			<div class='col-sm-6'>
+				<div id="categoriesView" class="panel panel-default">
+					<div class="panel-heading">Option A: Match Users and Reply</div>
+					<div class="panel-body">
+						<div class="panel panel-default">
+							<div class="panel-heading">Step 1: Review corpus categories</div>
+							<div class="panel-body">
+								<div class="label-container">
+								</div>
+							</div>
+							<div class="panel-footer text-right">
+								<button class="btn btn-success btn-classify"><span class="glyphicon glyphicon-tags"></span> Classify Users</button>
+								<button class="btn btn-success btn-match"><span class="glyphicon glyphicon-link"></span> Match Users</button>
+							</div>
+						</div>
+
+						<div id="matchTweetView" class="panel panel-default">
+							<div class="panel-heading">Step 2: Send Matching Tweets</div>
+							<div class="panel-body">
+								<div class="form-group">
+									<label for="tweet-template">Tweet Template for Matched Users</label>
+									<textarea class="form-control" rows="3" id="tweet-template"><%= settings.tweet %></textarea>
+									<span class="help-block">The tweet sent to all paired users.  {{user1}} and {{user2}} will be replaced by the screen names of each user.</span>
+								</div>
+								<button id="saveMatchTemplateBtn" type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-save"></span> Save Template</button>
+							</div>
+							<div class="panel-footer text-right">
+								<button class="btn btn-warning btn-match-send"><span class="glyphicon glyphicon-send"></span> Send Tweets to All Matched Users</button>
+							</div>
 						</div>
 					</div>
 				</div>
+			</div>
 
-	        </div>
-	        
-            
-            <div class='col-sm-6'>
-
-                <div id="statusView" class="panel panel-default">
-                    <div class="panel-heading">Campaign Status</div>
-                    <div class="panel-body">
-                        <ul class="list-unstyled">
-                            <li><span class="glyphicon glyphicon-ok"></span> Gathered all tweets</li>
-                            <li><span class="glyphicon glyphicon-exclamation-sign"></span> 5 users were flagged</li>
-                            <li><span class="glyphicon glyphicon-exclamation-sign"></span> 3 tweets were flagged</li>
-                            <li><span class="glyphicon glyphicon-ok"></span> Classified all valid users</li>
-                            <li><span class="glyphicon glyphicon-ok"></span> Matched all users</li>
-                            <li><span class="glyphicon glyphicon-ok"></span> Sent all tweets</li>
-                        </ul>
-
-                        <div class="final-message" class="font-size-large" style="font-weight: bold;">
-                            <span class="glyphicon glyphicon-thumbs-up"></span> Mission Accomplished!
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-	    </div>
-
-        <div class="row">
-
-            <div class='col-sm-6'>
-                <div id="categoriesView" class="panel panel-default">
-                    <div class="panel-heading">Step 2: Match Users (Optional)</div>
-                    <div class="panel-body">
-                        <div class="label-container">
-                        </div>
-                        <!--<button id="reloadBtn" type="submit" class="btn btn-success">Reload</button>-->
-
-                        <button class="btn btn-success btn-classify">Classify Valid Users</button>
-                        <button class="btn btn-success btn-match">Match Users</button>
-                                                    
-                    </div>
-                    
-                </div>
-            </div>
-         </div>
-         
-        <div class="row">
-
-            <div class='col-sm-6'>
-                <div id="tweetView" class="panel panel-default">
-                    <div class="panel-heading">Step 3: Send Tweets</div>
-                    <div class="panel-body">
-                        <div class="form-group">
-                            <label for="tweet-template">Tweet Template</label>
-                            <textarea class="form-control" rows="3" id="tweet-template"><%= settings.tweet %></textarea>
-                            <span class="help-block">The reply tweet sent to all paired users.  {{user1}} and {{user2}} will be replaced by the screen names of the matched users.</span>
-                        </div>
-                        <button id="saveTemplateBtn" type="submit" class="btn btn-success">Save Template</button>
-                        <button class="btn btn-success btn-send">Send Tweets</button>
-                    </div>
-                </div>
-            </div>
-
-         </div>
-
+			<div class='col-sm-6'>
+				<div id="directTweetView" class="panel panel-default">
+					<div class="panel-heading">Option B: Send Individual Tweets</div>
+					<div class="panel-body">
+						<div class="form-group">
+							<label for="tweet-template">Tweet Template for Individual @replies</label>
+							<textarea class="form-control" rows="3" id="tweet-template"><%= settings.tweet_direct %></textarea>
+							<span class="help-block">The tweet sent to all users.  {{user}} will be replaced by the screen name of each user.</span>
+						</div>
+						<button id="saveDirectTemplateBtn" type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-save"></span> Save Template</button>
+					</div>
+					<div class="panel-footer text-right">
+						<button class="btn btn-warning btn-direct-send"><span class="glyphicon glyphicon-send"></span> Send @replies to All Users</button>
+					</div>
+				</div>
+			</div>
+		 </div>
 	</div>
-
 </body>
 </html>

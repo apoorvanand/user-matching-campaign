@@ -1,36 +1,81 @@
 (function() {
 
 	app.TweetView = function (id) {
-	  this.el = $(id);
+		this.el = $(id);
 
-	  this.saveTemplateBtn = this.el.find('#saveTemplateBtn');
-	  this.templateInput   = this.el.find('#tweet-template');
-    this.button_send     = this.el.find('.btn-send');
+		this.saveDirectTemplateBtn = this.el.find('#saveDirectTemplateBtn');
+		this.saveMatchTemplateBtn = this.el.find('#saveMatchTemplateBtn');
+		this.directTemplateInput   = this.el.find('#tweet-direct-template');
+		this.matchTemplateInput   = this.el.find('#tweet-match-template');
+		this.direct_button_send     = this.el.find('.btn-direct-send');
+		this.match_button_send     = this.el.find('.btn-match-send');
 
-	  this.init();
+		this.init();
 	};
 
 	app.TweetView.prototype.init = function () {
 		var that = this;
 
-		this.saveTemplateBtn.click(function () {
-			that.saveTemplate();
+		this.saveDirectTemplateBtn.click(function () {
+			console.log('click');
+			that.saveDirectTemplate();
+		});
+
+		this.saveMatchTemplateBtn.click(function () {
+			console.log('click');
+			that.saveMatchTemplate();
 		});
 		
-    this.button_send.click(function () {
-      that.startSend();
-    });
+		this.direct_button_send.click(function () {
+			that.startDirectSend();
+		});
+
+		this.match_button_send.click(function () {
+			that.startMatchSend();
+		});
 
 	};
 
-	app.TweetView.prototype.saveTemplate = function () {
+	app.TweetView.prototype.saveDirectTemplate = function () {
 		var that = this;
 
 		var data = {
-			template: this.templateInput.val()
+			template: this.directTemplateInput.val()
 		};
 
-	    $.ajax({
+		$.ajax({
+			url: '/settings/direct_template',
+			type: 'POST',
+			data: data,
+			dataType: 'json',
+			success: function(data) {
+				that.onUpdateDirectTemplateComplete(data);
+			},
+			error: function(data) {
+				that.onUpdateDirectTemplateComplete(data);
+			}
+		});
+	};
+
+	app.TweetView.prototype.onUpdateTemplateComplete = function (res) {
+		var n = noty({
+			text        : res.responseText,
+			type        : 'success',
+			dismissQueue: true,
+			timeout: 2000,
+			layout      : 'bottomLeft',
+			theme       : 'defaultTheme'
+		});
+	};
+
+	app.TweetView.prototype.saveMatchTemplate = function () {
+		var that = this;
+
+		var data = {
+			template: this.matchTemplateInput.val()
+		};
+
+		$.ajax({
 			url: '/settings/template',
 			type: 'POST',
 			data: data,
@@ -46,31 +91,43 @@
 
 	app.TweetView.prototype.onUpdateTemplateComplete = function (res) {
 		var n = noty({
-            text        : res.responseText,
-            type        : 'success',
-            dismissQueue: true,
-            timeout: 2000,
-            layout      : 'bottomLeft',
-            theme       : 'defaultTheme'
-        });
+			text        : res.responseText,
+			type        : 'success',
+			dismissQueue: true,
+			timeout: 2000,
+			layout      : 'bottomLeft',
+			theme       : 'defaultTheme'
+		});
 	};
 	
 
-  app.TweetView.prototype.startSend = function () {
-    var that = this;
+	app.TweetView.prototype.startDirectSend = function () {
+		var that = this;
 
-      $.ajax({
-      url: '/send',
-      type: 'GET',
-      success: function(data) {
-        that.onSendComplete(data);
-      }
-    });
-  };
+		$.ajax({
+			url: '/sendDirect',
+			type: 'GET',
+			success: function(data) {
+				that.onSendComplete(data);
+			}
+		});
+	};
 
-  app.TweetView.prototype.onSendComplete = function (res) {
-    // do something
-    console.log(res);
-  };
+	app.TweetView.prototype.startMatchSend = function () {
+		var that = this;
+
+		$.ajax({
+			url: '/send',
+			type: 'GET',
+			success: function(data) {
+				that.onSendComplete(data);
+			}
+		});
+	};
+
+	app.TweetView.prototype.onSendComplete = function (res) {
+	// do something
+	console.log(res);
+};
 
 })();

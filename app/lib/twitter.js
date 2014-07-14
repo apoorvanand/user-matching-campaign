@@ -95,38 +95,4 @@ module.exports = {
 			setTimeout(function(){ callback(data) }, timeout);
 		});
 	}
-
-	// TODO
-	/*
-	sendMatch: function(user_id1, user_id2, category, template, callback) {
-		var this_ = this;
-
-		// Timeout to avoid rate limiting
-		// equation: (1000/timeout)*60*15 = rate_limit
-		var rate_limit = config.rate_limits.statuses_update || 6000;
-		var timeout    = (900000/rate_limit)+1;
-
-		var tweet = template.replace('{{user1}}', screenname1).replace('{{user2}}', screenname2).replace('{{category}}', category);
-		T.post('statuses/update', { status: 'hello world!' }, function(err, data, response) {
-
-			// Check for error
-			if (err) {
-				console.log(err.message.error);
-				db_manager.log(err.message);
-
-				// Check for rate limit error
-				if (err.statusCode == 429) {
-					console.log(('Retry in 1 min: statuses/update ('+user_id1+','+user_id2+')').warn);
-					//setTimeout(function() { this_.sendMatch(user_id1, user_id2, template) }, 60000);
-					return;
-				}
-				return;
-			}
-
-			console.log(data);
-
-			// Make callback
-			callback(data);
-		});
-	}*/
 };

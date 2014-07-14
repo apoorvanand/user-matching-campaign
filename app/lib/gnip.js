@@ -35,9 +35,9 @@ module.exports = {
 		}  
 
 		// Make the search HTTP request
-		console.log('Making Gnip search ('+query+')...'.info);
+		console.log(('Starting Gnip search...').info);
+		console.log(('('+query+')').info);
 		request.get(url, { 'qs': query_string }, function (error, response, body) {
-			console.log('Gnip search done.'.info);
 
 			// Log any error
 			if (error) {
@@ -52,6 +52,8 @@ module.exports = {
 			// Search again if we have a next id
 			if (result.next) {
 				this_.search(query, from_date, to_date, max_results, result.next);
+			} else {
+				console.log('Gnip search complete.'.info);
 			}
 		}).auth(config.gnip.user, config.gnip.pass, true);
 	},

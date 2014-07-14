@@ -1,22 +1,22 @@
 module.exports = {
 
-  // Use console logs
+	// Use console logs
 	verbose: true, 
 	
 	// User 'dev' or 'prod'; only uses live data in 'prod'
 	mode: 'dev',
 	
-	// by default, system does not send tweets; just simulates it
+	// By default, system does not send tweets; just simulates it
 	send_tweets: false,
 
-  // credentials to log into local server
+	// Credentials to log into local server
 	basic_auth: {
 		user:     'admin',
 		password: 'password'
 	},
 
-  // credentials to query tweets from gnip
-  // go to http://gnip.com/ to get an account. 
+	// Credentials to query tweets from Gnip
+	// Go to http://gnip.com/ to get an account
 	gnip: {
 		user: '',
 		pass: '',
@@ -24,22 +24,24 @@ module.exports = {
 		service_username: ''
 	},
 
-  // credentials to post to twitter 
-  twitter: {
-    consumer_key:         '',
-    consumer_secret:      '',
-    access_token:         '',
-    access_token_secret:  ''
-  },
+	// Credentials to interact with Twitter 
+	twitter: {
+		consumer_key:         '',
+		consumer_secret:      '',
+		access_token:         '',
+		access_token_secret:  ''
+	},
 
+	// Any rate limits that the application should consider
 	rate_limits: {
 		statuses_update: 15
 	}
 
-	// Managed with SQLite once the app is created
+	// Default form values, helpful in development
+	// Managed with a database once the app is created
 	defaults: {
 		search:         '',
-		tweet_template: ''
+		tweet_template: '',
+		tweet_direct_template: ''
 	}
-
 };

@@ -35,3 +35,9 @@ classifier.json
 
 #Database files
 *.db
+
+#Backup files
+backup/
+
+#Project files
+.project

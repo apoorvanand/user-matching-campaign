@@ -40,7 +40,40 @@ module.exports = function(app) {
 		}
 	});
 
-	app.post('/settings/template', function(req, res) {
+	app.post('/settings/template_matches', function(req, res) {
+
+		if (req.method == 'POST') {
+			var body = '';
+			req.on('data', function (data) {
+				body += data;
+
+				// Too much POST data, kill the connection
+				if (body.length > 1e6) {
+					req.connection.destroy();
+				}
+			});
+			req.on('end', function () {
+				var post = qs.parse(body);
+
+				// Save the template
+				if (post.template != undefined) {
+					db_manager.updateTemplate(post.template, function(err) {
+						if (err) {
+							res.render('ajax', { request: 'template update failed, '+err.message });
+						} else {
+							res.render('ajax', { request: 'template update successful' });
+						}
+					});
+				} else {
+					res.render('ajax', { request: 'template update failed, undefined' });
+				}
+			});
+		} else {
+			res.render('ajax', { request: 'no post' });
+		}
+	});
+
+	app.post('/settings/template_direct', function(req, res) {
 
 		if (req.method == 'POST') {
 			var body = '';

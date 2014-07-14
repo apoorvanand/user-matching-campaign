@@ -8,19 +8,19 @@ module.exports = {
 		var this_ = this;
 		cursor = cursor || 0;
 
-    // Non-productiom mode; use test data
-    if (config.mode != 'prod'){
-      matches = new Array();
-      matches.push({ 
-        id: 1525,
-        user_id1: '987121',
-        user_name1: 'jbulava',
-        user_id2: '54256387',
-        user_name2: 'rchoi',
-        category: '',
-        sent_match: 0 
-      });
-    }
+		// Non-productiom mode; use test data
+		if (config.mode != 'prod'){
+			matches = new Array();
+			matches.push({ 
+				id: 1525,
+				user_id1: '987121',
+				user_name1: 'jbulava',
+				user_id2: '54256387',
+				user_name2: 'rchoi',
+				category: '',
+				sent_match: 0 
+			});
+		}
 
 		if (cursor < matches.length) {
 			// Fill in the template
@@ -43,6 +43,46 @@ module.exports = {
 			db_manager.markSent(matches[cursor].id, function(){
 				// Continue sending
 				this_.sendTweets(matches, template, ++cursor);
+			});
+		}
+	},
+
+	sendDirectTweets: function(users, template, cursor) {
+		var this_ = this;
+		cursor = cursor || 0;
+
+		// Non-productiom mode; use test data
+		if (config.mode != 'prod'){
+			users = new Array();
+			users.push({ 
+				id: 1,
+				user_id: '987121',
+				user_name: 'jbulava',
+				sent_tweet: 0 
+			});
+		}
+
+		if (cursor < users.length) {
+			// Fill in the template
+			var tweet = template.replace('{{user}}', users[cursor].user_name);
+
+			// Send the tweet
+			if (config.send_tweets){
+				TwitterWrapper.postTweet(tweet, confirmTweet);
+			} else {
+				console.log('MOCK: Suppressed tweet (Update config.send_tweets to really send)'.warn);
+				confirmTweet();
+			}
+
+			console.log('Tweet: '+tweet);
+		} else {
+			console.log('Done sending tweets.'.info);
+		}
+
+		function confirmTweet() {
+			db_manager.markSent(users[cursor].id, function(){
+				// Continue sending
+				this_.sendDirectTweets(users, template, ++cursor);
 			});
 		}
 	}

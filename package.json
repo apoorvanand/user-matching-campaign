@@ -1,7 +1,7 @@
 {
-	"name": "node-user-match",
-	"description": "auto-response app to match users",
-	"version": "0.0.1",
+	"name": "node-mashable-usermatch",
+	"description": "Gather tweets from an audience, then analyze and communicate.",
+	"version": "0.0.2",
 	"private": true,
 	"dependencies": {
 		"express": "3.4.4",

@@ -61,15 +61,14 @@ module.exports = function(app) {
 		});
 	});
 	
-  app.get('/flush', function(req, res) {
+	// Flush tweets
+	app.get('/flush', function(req, res) {
+		db_manager.flushAllTweets(function(err, rows) {
+			res.render('ajax', { request: 'Tweets flushed' });
+		});
+	});
 
-    // Flush tweets
-    db_manager.flushAllTweets(function(err, rows) {
-      res.render('ajax', { request: 'Tweets flushed' });
-    });
-  });
-
-	// TODO: Change to POST
+	// Classify valid users
 	app.get('/classify', function(req, res) {
 
 		// Get all valid users that do not have classification defined
@@ -87,13 +86,13 @@ module.exports = function(app) {
 		res.render('ajax', { request: 'classify' });
 	});
 
-	// TODO: Change to POST
+	// Match classified users
 	app.get('/match', function(req, res) {
 		user_match.matchUsers();
 		res.render('ajax', { request: 'match' });
 	});
 
-	// Send the tweets
+	// Send matched user tweets
 	app.get('/send', function(req, res) {
 		console.log('Get all valid users to send tweets...'.info);
 		
@@ -120,6 +119,71 @@ module.exports = function(app) {
 					screennames.push.apply(screennames, data);
 				}
 
+				// TODO: revisit this to implement
+				if (cursor < 0 /*lookup_array.length */) {
+					TwitterWrapper.usersLookup(lookup_array[cursor], cursor, lookup);
+				} else {
+					setScreennames(screennames);
+				}
+			}
+
+			lookup();
+		}
+
+		function setScreennames(screennames) {
+			console.log('Set latest screennames...'.info);
+			db_manager.updateMatchUserScreennames(screennames, getSettings);
+		}
+
+		function getSettings() {
+			console.log('Get tweet template...'.info);
+
+			// Get tweet template
+			db_manager.getSettings(getMatches);
+		}
+
+		function getMatches(err, settings) {
+		
+			// GET matches not sent where usernames are both not null
+			db_manager.getMatchesToSend(startSending);
+
+			function startSending(err, matches) {
+		    	console.log('Start sending tweets...'.info);
+				tweetDelivery.sendTweets(matches, settings.tweet);
+			}
+		}
+
+		res.render('ajax', { request: 'send' });
+	});
+
+	// Send one-to-one tweets
+	app.get('/sendDirect', function(req, res) {
+		console.log('Get all valid users to send tweets...'.info);
+		
+		// Get all valid users for existance check
+		db_manager.getAllValidUsers(checkUsers);
+
+		function checkUsers(err, rows) {
+			console.log('Lookup users to confirm existance...'.info);
+
+			// Separate the user IDs into arrays of 100 to make a minimal amount of users/lookup calls
+			var lookup_array = new Array();
+			for (var i = 0; i < rows.length; i++) {
+				if (i % 100 == 0) {
+					lookup_array.push(new Array());
+				}
+				lookup_array[lookup_array.length-1].push(rows[i].user_id);
+			}
+
+			var screennames = new Array();
+			function lookup(cursor, data) {
+				cursor = cursor || 0;
+
+				if (data) {
+					screennames.push.apply(screennames, data);
+				}
+
+				// TODO: revisit this to implement
 				if (cursor < 0 /*lookup_array.length */) {
 					TwitterWrapper.usersLookup(lookup_array[cursor], cursor, lookup);
 				} else {
@@ -138,18 +202,16 @@ module.exports = function(app) {
 		function getSettings() {
 			console.log('Get tweet template...'.info);
 
-			// Get tweet template
-			db_manager.getSettings(getMatches);
+			// Get tweet template and start sending
+			db_manager.getSettings(getUsers);
 		}
 
-		function getMatches(err, settings) {
-		
-			// GET matches not sent where usernames are both not null
-			db_manager.getMatchesToSend(startSending);
+		function getUsers(err, settings) {
+			db_manager.getAllValidUsers(startSending);
 
-			function startSending(err, matches) {
-		    console.log('Start sending tweets...'.info);
-				tweetDelivery.sendTweets(matches, settings.tweet);
+			function startSending(err, users) {
+				console.log('Start sending direct tweets...'.info);
+				tweetDelivery.sendDirectTweets(users, settings.tweet_direct);
 			}
 		}
 

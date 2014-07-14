@@ -101,7 +101,7 @@ module.exports = {
 
 		var db = new sqlite.Database(databases.main);
 		var tweet_smnt  = db.prepare("INSERT OR IGNORE INTO tweets (tweet_id, tweet_body, user_id, display_name, screenname, valid_user, valid_tweet) VALUES (?,?,?,?,?,?,?)");
-		var user_smnt   = db.prepare("INSERT OR IGNORE INTO valid_users (user_id, screenname) VALUES (?.?)");
+		var user_smnt   = db.prepare("INSERT OR IGNORE INTO valid_users (user_id, screenname) VALUES (?,?)");
 		var reject_smnt = db.prepare("INSERT OR IGNORE INTO rejected_users (user_id, screenname) VALUES (?,?)");
 
 		for (var i = 0; i < results.length; i++) {
@@ -128,7 +128,7 @@ module.exports = {
 			if (valid_user) {
 				user_smnt.run(user_id, results[i].actor.preferredUsername);
 			} else {
-				console.log(('REJECTED: '+user_id).warn);
+
 				reject_smnt.run(user_id, results[i].actor.preferredUsername);
 			}
 		}

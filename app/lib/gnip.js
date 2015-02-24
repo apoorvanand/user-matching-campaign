@@ -20,7 +20,7 @@ module.exports = {
 		var max_results = max_results || 500;
 		var next_id     = next_id || 0;
 
-		var url = 'https://search.gnip.com/accounts/' + config.gnip.account + '/search/prod.json';
+		var url = 'https://search.gnip.com/accounts/' + config.gnip.account + '/search/' + config.gnip.service_username + '.json';
 
 		var query_string = {
 			'publisher' : 'twitter',

@@ -31,6 +31,7 @@ module.exports = function(app) {
 				db_manager.log(err);
 				return;
 			}
+			
 			gnip.search(row.search, row.start_date, row.end_date);
 		}
 

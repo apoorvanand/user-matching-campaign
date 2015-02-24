@@ -1,19 +1,20 @@
-User Matching Campaign
-===============
+User Interest Matching Campaign
+===============================
 
-This codebase was originally designed for Mashable's #1Connection campaign. We have open source it for others
-to run their own similar campaigns.
+This codebase was originally designed for Mashable's #1Connection campaign. We have open sourced it for others to run their own similar campaigns.  Here are a few example conversations that resulted for Mashable.
 
-<img src="screenshot.png" style="width: 70%;"/>
+<img src="tweet1.png" style="width: 70%;"/>
+<img src="tweet2.png" style="width: 70%;"/>
+<img src="tweet3.png" style="width: 70%;"/>
 
 This code/campaign runs in the following way:
 
 - The brand/company announces participation of users tweeting with a #hashtag
 - At a defined time in the future, the brand/company runs the tool, which:
 	- Finds all unique users who tweeted with the #hashtag in a given timeframe (using GNIP)
-	- Filters out users who use offensive words using a "banned words" list
+	- Filters out users who use offensive words given a "banned words" list
     - Categorizes users into buckets based on their previous tweets (categories provided by brand)
-- After review, the brand/company uses to theool to send tweet with @mention introductions to users who match on category
+- After review, the brand/company uses to the tool to send tweets with @mention introductions to users who match on category
 
 Requirements
 ------------
@@ -46,7 +47,7 @@ Categorization
 
 Categorization of users is done based on corpuses of in the `corpus` directory. Each file is a  collection of words that are associate with that category. (In practice, a set of titles or paragraphs about that topic.) The corpuses are initialized at server startup time.
 
-When matching, the tool find the last N tweets from a user and runs a matching algorithm against each corpus. The category with the strongest match is then chosen as the user's category for later user-user matching.
+When matching, the tool finds the last N tweets from a user and runs a matching algorithm against each corpus. The category with the strongest match is then chosen as the user's category for later user-user matching.
 
 Filtering offensive words
 ----------

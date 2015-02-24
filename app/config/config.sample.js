@@ -35,7 +35,7 @@ module.exports = {
 	// Any rate limits that the application should consider
 	rate_limits: {
 		statuses_update: 15
-	}
+	},
 
 	// Default form values, helpful in development
 	// Managed with a database once the app is created

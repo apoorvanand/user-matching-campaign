@@ -30,7 +30,7 @@
 	<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 		<div class="container">
 			<div class="navbar-header">
-				<a class="navbar-brand" href="#">Twitter Talkback</a>
+				<a class="navbar-brand" href="#">Twitter User Matching & Mass Reply</a>
 			</div>
 		</div>
 	</div>
@@ -125,6 +125,7 @@
 					</div>
 				</div>-->
 
+<!--
 				<div id="configView" class="panel panel-default">
 					<div class="panel-heading">Account Settings</div>
 					<div class="panel-body">
@@ -132,7 +133,7 @@
 							<li><a href="">Setup your Twitter credentials</a></li>
 							<li><a href="">Setup your Gnip credentials</a></li>
 						</ul>
-						<!--<b>Mode</b><br />
+						<b>Mode</b><br />
 						<div class="btn-group" data-toggle="buttons">
 							<label class="btn btn-primary active">
 							<input type="radio" name="options" id="option1" checked> Development
@@ -140,65 +141,87 @@
 							<label class="btn btn-warning">
 							<input type="radio" name="options" id="option2"> Production
 							</label>
-						</div>-->
+						</div>
 					</div>
 				</div>
+-->
+
 			</div>
 		</div>
 
 		<div class="row">
-
-			<div class='col-sm-6'>
-				<div id="categoriesView" class="panel panel-default">
-					<div class="panel-heading">Option A: Match Users and Reply</div>
-					<div class="panel-body">
-						<div class="panel panel-default">
-							<div class="panel-heading">Step 1: Review corpus categories</div>
+		
+			<div class='col-sm-12'>
+			
+				<div role="tabpanel">
+				
+				  <!-- Nav tabs -->
+				  <ul class="nav nav-tabs" role="tablist">
+				    <li role="presentation" class="active"><a href="#option1" aria-controls="option1" role="tab" data-toggle="tab">Option A: Match Users and Reply</a></li>
+				    <li role="presentation"><a href="#option2" aria-controls="option2" role="tab" data-toggle="tab">Option B: Send Individual Tweets</a></li>
+				  </ul>
+				
+				  <!-- Tab panes -->
+				  <div class="tab-content">
+				    <div role="tabpanel" class="tab-pane active" id="option1">
+				    
+						<div id="categoriesView" class="panel panel-default">
 							<div class="panel-body">
-								<div class="label-container">
+								<div class="panel panel-default">
+									<div class="panel-heading">Step 1: Review corpus categories</div>
+									<div class="panel-body">
+										<div class="label-container">
+										</div>
+									</div>
+									<div class="panel-footer text-right">
+										<button class="btn btn-success btn-classify"><span class="glyphicon glyphicon-tags"></span> Classify Users</button>
+										<button class="btn btn-success btn-match"><span class="glyphicon glyphicon-link"></span> Match Users</button>
+									</div>
+								</div>
+				
+								<div id="matchTweetView" class="panel panel-default">
+									<div class="panel-heading">Step 2: Send Matching Tweets</div>
+									<div class="panel-body">
+										<div class="form-group">
+											<label for="tweet-template">Tweet Template for Matched Users</label>
+											<textarea class="form-control" rows="3" id="tweet-match-template"><%= settings.tweet %></textarea>
+											<span class="help-block">The tweet sent to all paired users.  {{user1}} and {{user2}} will be replaced by the screen names of each user.</span>
+										</div>
+										<button id="saveMatchTemplateBtn" type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-save"></span> Save Template</button>
+									</div>
+									<div class="panel-footer text-right">
+										<button class="btn btn-warning btn-match-send"><span class="glyphicon glyphicon-send"></span> Send Tweets to All Matched Users</button>
+									</div>
 								</div>
 							</div>
-							<div class="panel-footer text-right">
-								<button class="btn btn-success btn-classify"><span class="glyphicon glyphicon-tags"></span> Classify Users</button>
-								<button class="btn btn-success btn-match"><span class="glyphicon glyphicon-link"></span> Match Users</button>
-							</div>
 						</div>
-
-						<div id="matchTweetView" class="panel panel-default">
-							<div class="panel-heading">Step 2: Send Matching Tweets</div>
+				    
+				    </div>
+				    <div role="tabpanel" class="tab-pane" id="option2">
+				    
+						<div id="directTweetView" class="panel panel-default">
 							<div class="panel-body">
 								<div class="form-group">
-									<label for="tweet-template">Tweet Template for Matched Users</label>
-									<textarea class="form-control" rows="3" id="tweet-match-template"><%= settings.tweet %></textarea>
-									<span class="help-block">The tweet sent to all paired users.  {{user1}} and {{user2}} will be replaced by the screen names of each user.</span>
+									<label for="tweet-template">Tweet Template for Individual @replies</label>
+									<textarea class="form-control" rows="3" id="tweet-direct-template"><%= settings.tweet_direct %></textarea>
+									<span class="help-block">The tweet sent to all users.  {{user}} will be replaced by the screen name of each user.</span>
 								</div>
-								<button id="saveMatchTemplateBtn" type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-save"></span> Save Template</button>
+								<button id="saveDirectTemplateBtn" type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-save"></span> Save Template</button>
 							</div>
 							<div class="panel-footer text-right">
-								<button class="btn btn-warning btn-match-send"><span class="glyphicon glyphicon-send"></span> Send Tweets to All Matched Users</button>
+								<button class="btn btn-warning btn-direct-send"><span class="glyphicon glyphicon-send"></span> Send @replies to All Users</button>
 							</div>
 						</div>
-					</div>
+						
+				    </div>
+				  </div>
+				
 				</div>
-			</div>
 
-			<div class='col-sm-6'>
-				<div id="directTweetView" class="panel panel-default">
-					<div class="panel-heading">Option B: Send Individual Tweets</div>
-					<div class="panel-body">
-						<div class="form-group">
-							<label for="tweet-template">Tweet Template for Individual @replies</label>
-							<textarea class="form-control" rows="3" id="tweet-direct-template"><%= settings.tweet_direct %></textarea>
-							<span class="help-block">The tweet sent to all users.  {{user}} will be replaced by the screen name of each user.</span>
-						</div>
-						<button id="saveDirectTemplateBtn" type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-save"></span> Save Template</button>
-					</div>
-					<div class="panel-footer text-right">
-						<button class="btn btn-warning btn-direct-send"><span class="glyphicon glyphicon-send"></span> Send @replies to All Users</button>
-					</div>
-				</div>
 			</div>
-		 </div>
+		
+		</div>
+
 	</div>
 </body>
 </html>

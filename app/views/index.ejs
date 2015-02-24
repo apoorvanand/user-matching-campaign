@@ -39,8 +39,12 @@
 		<div class="row">
 			<div class='col-sm-8'>
 				<div id="searchView" class="searchView panel panel-default">
-					<div class="panel-heading">Start: Query for Users/Tweets</div>
+					<div class="panel-heading">Step 1: Query for Users/Tweets</div>
 					<div class="panel-body">
+					
+						Start by querying Twitter (via GNIP) for the users who have engaged with your @brand our your #hashtag campaign. 
+						For tips on query syntax, follow the <a href="http://support.gnip.com/apis/powertrack/rules.html" target="_target">GNIP Search API Reference</a>.
+						<hr>
 
 						<div class="form-group">
 
@@ -93,12 +97,14 @@
 								});
 							</script>
 
+<!--
 						  <button type="submit" class="btn btn-primary" id="save-settings"><span class="glyphicon glyphicon-floppy-save"></span> Save Query and Times</button>
+-->
 
 						</div>
 					</div>
 					<div class="panel-footer text-right">
-						<button class="btn btn-success btn-search"><span class="glyphicon glyphicon-search"></span> Gather Tweets</button>
+						<button class="btn btn-success btn-search"><span class="glyphicon glyphicon-search"></span> Query & Save Tweets</button>
 						<button class="btn btn-success btn-export"><span class="glyphicon glyphicon-download-alt"></span> Export Tweets</button>
 						<button class="btn btn-danger btn-flush"><span class="glyphicon glyphicon-trash"></span> Flush Tweets</button>
 					</div>
@@ -157,18 +163,23 @@
 				
 				  <!-- Nav tabs -->
 				  <ul class="nav nav-tabs" role="tablist">
-				    <li role="presentation" class="active"><a href="#option1" aria-controls="option1" role="tab" data-toggle="tab">Option A: Match Users and Reply</a></li>
-				    <li role="presentation"><a href="#option2" aria-controls="option2" role="tab" data-toggle="tab">Option B: Send Individual Tweets</a></li>
+				    <li role="presentation" class="active"><a href="#option1" aria-controls="option1" role="tab" data-toggle="tab" class="panel-heading">Step 2a: Match Users and Reply</a></li>
+				    <li role="presentation"><a href="#option2" aria-controls="option2" role="tab" data-toggle="tab" class="panel-heading">Step 2b: Send Individual Tweets</a></li>
 				  </ul>
 				
 				  <!-- Tab panes -->
 				  <div class="tab-content">
 				    <div role="tabpanel" class="tab-pane active" id="option1">
-				    
+
 						<div id="categoriesView" class="panel panel-default">
+
 							<div class="panel-body">
+
+							Classify users into buckets, then send pair-wise introduction tweets to users that match.  
+							<hr>
+
 								<div class="panel panel-default">
-									<div class="panel-heading">Step 1: Review corpus categories</div>
+									<div class="panel-heading">Review corpus categories</div>
 									<div class="panel-body">
 										<div class="label-container">
 										</div>
@@ -180,7 +191,7 @@
 								</div>
 				
 								<div id="matchTweetView" class="panel panel-default">
-									<div class="panel-heading">Step 2: Send Matching Tweets</div>
+									<div class="panel-heading">Send Matching Tweets</div>
 									<div class="panel-body">
 										<div class="form-group">
 											<label for="tweet-template">Tweet Template for Matched Users</label>
@@ -201,6 +212,11 @@
 				    
 						<div id="directTweetView" class="panel panel-default">
 							<div class="panel-body">
+							
+							Send all users the same tweet.   
+							<hr>
+
+							
 								<div class="form-group">
 									<label for="tweet-template">Tweet Template for Individual @replies</label>
 									<textarea class="form-control" rows="3" id="tweet-direct-template"><%= settings.tweet_direct %></textarea>

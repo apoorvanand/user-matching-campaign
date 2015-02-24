@@ -17,11 +17,14 @@
 	app.SearchView.prototype.init = function () {
 		var that = this;
 
-		this.saveSettingsBtn.click(function () {
-			that.saveSettings();
-		});
+/*
+	this.saveSettingsBtn.click(function () {
+		that.saveSettings();
+	});
+*/
 		
     this.button_search.click(function () {
+      that.saveSettings();
       that.startSearch();
     });
 

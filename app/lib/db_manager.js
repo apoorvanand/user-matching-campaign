@@ -104,7 +104,7 @@ module.exports = {
 		var user_smnt   = db.prepare("INSERT OR IGNORE INTO valid_users (user_id, screenname) VALUES (?,?)");
 		var reject_smnt = db.prepare("INSERT OR IGNORE INTO rejected_users (user_id, screenname) VALUES (?,?)");
 
-		for (var i = 0; i < results.length; i++) {
+		for (var i = 0; results && i < results.length; i++) {
 			console.log(results[i].actor.id.replace('id:twitter.com:','') + ' | ' + results[i].actor.displayName + ' | ' + results[i].actor.preferredUsername);
 			var valid_user  = validator.validScreenname(results[i].actor.preferredUsername);
 			var valid_tweet = validator.validTweet(results[i].body);

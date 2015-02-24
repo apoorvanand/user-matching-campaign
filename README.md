@@ -1,24 +1,30 @@
-node-talkback
+User Matching
 ===============
 
-A timed response app for hashtag campaigns. Originally designed for Mashable's #1Connection campaign.
+This codebase was originally designed for Mashable's #1Connection campaign. We have open source it for others
+to run their own similar campaigns.
+
+<img src="screenshot.png" style="width: 70%;"/>
+
+This code/campaign runs in the following way:
+
+- The brand/company announces participation of users tweeting with a #hashtag
+- At a defined time in the future, the brand/company runs the tool, which:
+	- Finds all unique users who tweeted with the #hashtag in a given timeframe (using GNIP)
+	- Filters out users who use offensive words using a "banned words" list
+    - Categorizes users into buckets based on their previous tweets (categories provided by brand)
+- After review, the brand/company uses to theool to send tweet with @mention introductions to users who match on category
 
 Requirements
 ------------
 
-This codebase has been tested with Node.js version v0.10.28
-
-How it works
-------------
-
-1. The Gnip Search API is used to retrieve all tweets that use a hashtag in a certain timeframe.
-2. Tweets are processed.  The user matching portion of this project is what may differ from project to project.
-3. @mentions are sent to participants.
+- Node.js version v0.10.28
+- A GNIP account with access to the Search API
 
 Installation
 ------------
 If you do not have Node.js installed, you can download the download the latest from <http://nodejs.org/>
-<br /><br />
+
 Note: only preface these commands with 'sudo' if your Node.js was installed with root privileges.
 
 Install the Grunt CLI
@@ -35,22 +41,49 @@ Run the app
   
 Open the application in a browser: http://localhost:3000/
 
+Categorization
+----------
+
+Categorization of users is done based on corpuses of in the `corpus` directory. Each file is a  collection of words that are associate with that category. (In practice, a set of titles or paragraphs about that topic.) The corpuses are initialized at server startup time.
+
+When matching, the tool find the last N tweets from a user and runs a matching algorithm against each corpus. The category with the strongest match is then chosen as the user's category for later user-user matching.
+
+Filtering offensive words
+----------
+
+The code sample includes a profanity.js file to search for and filter out banned words. Tweets with such words are not included in the user matching, and therefore these users are not @mention introduced.
+
+Please inspect the matches manually before sending out introductions to ensure there are no offensive matches or other issues with the campaign.
+
+Date Formats
+----------
+
+Date formats in the UI follow the GNIP data format, which is `YYYYMMDDHHM`. Below are some examples:
+
+- Start: 201406120400
+- To Friday: 201406270401
+- Thru Sunday: 201406300401
+
+Production mode
+----------
+
+The default settings in config.js have the program working in dev mode (ie, it does not use live tweets and does not send @mention introductions). To operate in production mode, change the following settings:
+
+	mode: prod
+	send_tweets: true
+
+
+Mashable Introduction and Recap
+------------------
+
+- [#1Connection Social Media Day](http://mashable.com/2014/06/13/1connection-social-media-day)
+- [#1Connection Social Media Day: Recap](http://mashable.com/2014/07/02/1connection-social-media-day-recap)
+
 Todo
 ----
 1. Check that users exist before sending out tweets
-2. Better way to import the corpus (i.e. don't use a timeout?)
+2. Easier way to import the corpus 
 3. Check that all requires are necessary
-4. Add action to clear out database tables after matches are sent
-5. If possible, add a function that checks status of previous action to make sure the current action can run
-6. Check for unfilled template variables before sending tweet
-
-Gnip Dates
-----------
-Start - 201406120400<br />
-To Friday - 201406270401<br />
-Thru Sunday - 201406300401
-
-Mashable Publicity
-------------------
-<http://mashable.com/2014/06/13/1connection-social-media-day/><br />
-<http://mashable.com/2014/07/02/1connection-social-media-day-recap/>
+4. Clear out database tables after matches are sent
+5. Check for unfilled template variables before sending tweet
+6. If possible, add a function that checks status of previous action to make sure the current action can run

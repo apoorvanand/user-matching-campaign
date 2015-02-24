@@ -1,4 +1,4 @@
-User Matching
+User Matching Campaign
 ===============
 
 This codebase was originally designed for Mashable's #1Connection campaign. We have open source it for others

@@ -3,9 +3,9 @@ User Interest Matching Campaign
 
 This codebase was originally designed for Mashable's #1Connection campaign. We have open sourced it for others to run their own similar campaigns.  Here are a few example conversations that resulted for Mashable.
 
-<img src="tweet1.png" style="width: 70%;"/>
-<img src="tweet2.png" style="width: 70%;"/>
-<img src="tweet3.png" style="width: 70%;"/>
+<img src="tweet1.jpg" style="width: 70%;"/>
+<img src="tweet2.jpg" style="width: 70%;"/>
+<img src="tweet3.jpg" style="width: 70%;"/>
 
 This code/campaign runs in the following way:
 
